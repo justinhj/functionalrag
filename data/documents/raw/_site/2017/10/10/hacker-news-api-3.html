@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  <title>Hacker News API Part 3</title>
+  <meta name="description" content="Previous related post: Hacker News API part 2">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://localhost:4003/2017/10/10/hacker-news-api-3.html">
+  <link rel="alternate" type="application/rss+xml" title="Functional[Justin]" href="http://localhost:4003/feed.xml">
+</head>
+
+
+  
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-YDJ0HSM9M6"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-YDJ0HSM9M6');
+  </script>
+
+  <body>
+
+    <header class="site-header">
+  
+    <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-3">
+	<h5><a class="site-title" href="/">Functional[Justin]</a></h5>
+      </div>
+    </div>
+
+    <div class="footer-col-wrapper">
+      
+      <div class="footer-col footer-col-1">
+        <p>
+          <img class="circle" width="110px" src="/images/justinnew.png"/></p>
+
+      </div>
+      
+      <div class="footer-col footer-col-2">
+        <p>Justin is a British/Canadian software engineer at Treasure Data, functional programming, polyglot, Neovim and Emacs. </p>
+      </div>
+      
+      <div class="footer-col footer-col-3">
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/justinhj"><span class="icon icon--github"><svg viewBox="0 0 16 16"><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/></svg>
+</span><span class="username">justinhj</span></a>
+
+          </li>
+          
+	  
+	  <li>
+	    <a href="mailto:justinhj+blog@gmail.com">
+	      <span class="icon">
+		<img src="/images/email.png"/>
+	      </span>
+	      <span class="username">
+		justinhj@gmail.com
+	      </span>
+	    </a>
+	  </li>
+
+          <li>
+            <a href="https://gitter.im/justinhj">
+            <span class="icon">
+              <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 98.7 16.3" data-v-44ebcb1a=""><g><path d="M20.9,0.3h2.6v15.8h-2.6V0.3z"></path> <path d="M34.8,2.9h-4V0.3h11.8v2.6h-5.2v13.2h-2.6V2.9z"></path> <path d="M51.9,2.9h-4V0.3h11.8v2.6h-5.2v13.2h-2.6V2.9z"></path> <path d="M66.4,0.3h11.8v2.6H69v3.9h7.9v2.6H69v4h9.2v2.6H66.4V0.3z"></path> <path d="M98.7,16.1l-4.2-5.9c1.7-0.9,2.8-2.5,2.8-4.6c0-3.1-2.5-5.3-5.7-5.3l-6.2,0v15.8h2.6l0-5.3
+    c0,0,3.6,0,3.6,0l3.8,5.3H98.7z M88.1,8.2l0-5.3l3.5,0c1.7,0,3,1,3,2.6c0,1.7-1.4,2.6-3,2.6L88.1,8.2z"></path> <path d="M7.9,7.1v2.6l3.9,0c0,0,0,1.4,0,2.3c-0.1,0.2-0.4,1.8-3.8,1.8c-0.2,0-0.3,0-0.5,0
+    c-0.1,0-0.2,0-0.2,0c-0.1,0-0.2,0-0.2,0c-0.1,0-0.2-0.1-0.3-0.1c-0.1,0-0.1,0-0.2-0.1c0,0-0.1,0-0.1,0c-2.1-0.7-3.5-2.8-3.5-5.3
+    l0,0v0v0c0-0.3,0-0.5,0.1-0.8C3.3,4.7,5.4,2.5,8,2.5c0.9,0,2.5,0.3,3.6,1.5l1.5-2.2c0,0-1.3-1.9-5-1.9C3.7,0,0.4,3.3,0,7.3
+    c0,0.3,0,0.6,0,0.8l0,0l0,0c0,4.3,3.2,7.9,7.7,8.1c0.2,0,0.3,0,0.5,0c0,0,0.1,0,0.1,0c0.3,0,0.5,0,0.7,0c0.1,0,0.2,0,0.3,0
+    c0.2,0,0.3,0,0.5-0.1c2.7-0.1,4.7-2.3,4.7-3.4c0-5,0-5.7,0-5.7H7.9z"></path></g></svg>
+            </span>
+            <span class="username">
+              justinhj
+            </span>
+</a>
+          </li>
+	  <li>
+	    <a href="https://www.linkedin.com/in/justinheyesjones">
+	      <span class="icon">
+		<img src="/images/linkedin.png"/>
+	      </span>
+	      <span class="username">
+		LinkedIn
+	      </span>
+	    </a>
+	  </li>
+
+	  
+          <li>
+            <a href="https://twitter.com/justinhj"><span class="icon icon--twitter"><svg viewBox="0 0 16 16"><path fill="#828282" d="M15.969,3.058c-0.586,0.26-1.217,0.436-1.878,0.515c0.675-0.405,1.194-1.045,1.438-1.809c-0.632,0.375-1.332,0.647-2.076,0.793c-0.596-0.636-1.446-1.033-2.387-1.033c-1.806,0-3.27,1.464-3.27,3.27 c0,0.256,0.029,0.506,0.085,0.745C5.163,5.404,2.753,4.102,1.14,2.124C0.859,2.607,0.698,3.168,0.698,3.767 c0,1.134,0.577,2.135,1.455,2.722C1.616,6.472,1.112,6.325,0.671,6.08c0,0.014,0,0.027,0,0.041c0,1.584,1.127,2.906,2.623,3.206 C3.02,9.402,2.731,9.442,2.433,9.442c-0.211,0-0.416-0.021-0.615-0.059c0.416,1.299,1.624,2.245,3.055,2.271 c-1.119,0.877-2.529,1.4-4.061,1.4c-0.264,0-0.524-0.015-0.78-0.046c1.447,0.928,3.166,1.469,5.013,1.469 c6.015,0,9.304-4.983,9.304-9.304c0-0.142-0.003-0.283-0.009-0.423C14.976,4.29,15.531,3.714,15.969,3.058z"/></svg>
+</span><span class="username">justinhj</span></a>
+
+          </li>
+          
+
+	  
+        </ul>
+      </div>
+      
+    </div>
+
+    <div class="my-links">
+      <span class="page-link">
+      	<a href="/index.html">Posts by Date</a>
+       </span>
+
+      <span class="page-link">
+      	<a href="/topposts.html">Popular Posts</a>
+      </span>
+
+      <span class="page-link">
+      	<a href="https://www.youtube.com/c/FunctionalJustin">YouTube channel</a>
+       </span>
+
+      <span class="page-link">
+      	<a href="/talks.html">Speaking Events</a>
+       </span>
+
+      <span class="page-link">
+      	<a href="/privacy.html">Privacy</a>
+      </span>
+
+      </div>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        
+
+  
+
+  <!-- Iterate over the tags in this post -->
+  
+
+
+
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">Hacker News API Part 3</h1>
+    <p class="post-meta"><time datetime="2017-10-10T17:00:00-07:00" itemprop="datePublished">Oct 10, 2017</time></p>
+    <div class="post-meta">
+      
+        
+        
+        
+        
+        
+        
+        
+        
+        More posts about
+    
+      <i class="fa fa-tags"></i>
+    
+  
+        <a href="/tag/scala/">
+        Scala</a>
+        
+          ,
+        
+      
+        <a href="/tag/functional-programming/">
+        Functional Programming</a>
+        
+          ,
+        
+      
+        <a href="/tag/hacker-news/">
+        Hacker News</a>
+        
+          ,
+        
+      
+        <a href="/tag/hacker-news-api/">
+        Hacker News Api</a>
+        
+          ,
+        
+      
+        <a href="/tag/fetch/">
+        Fetch</a>
+        
+          ,
+        
+      
+        <a href="/tag/typelevel/">
+        Typelevel</a>
+        
+          ,
+        
+      
+        <a href="/tag/reftree/">
+        Reftree</a>
+        
+          ,
+        
+      
+        <a href="/tag/scala.js/">
+        Scala.Js</a>
+        
+          ,
+        
+      
+        <a href="/tag/47-degs/">
+        47 Degs</a>
+        
+      
+    </div>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p>Previous related post: <a href="/2017/07/30/hacker-news-api-2.html">Hacker News API part 2</a></p>
+
+<p>Github project related to this post</p>
+
+<ul>
+  <li><a href="https://github.com/justinhj/hnfetchjs">hnfetch</a></li>
+</ul>
+
+<p><img src="/../images/ux.png" alt="Frontend example" /></p>
+
+<p>In part 2 of this series I presented an interative command line app that used the <a href="https://github.com/47deg/fetch">Fetch</a> library to pull data from an online data source (the <a href="https://github.com/HackerNews/API">Hacker News API</a>). In the related github repo I’ve developed that project in the following ways:</p>
+
+<ul>
+  <li>Converted the code from a command line JVM app to a Scala.js app that runs in the browser</li>
+  <li>Created a custom cache so we can query its size and clear it on demand</li>
+  <li>Used <a href="http://udash.io/">Udash</a> to create an interactive frontend to operate the fetches</li>
+  <li>Visualize each round of the data fetch using <a href="https://github.com/stanch/reftree">reftree</a></li>
+</ul>
+
+<p>You can check out the project live here</p>
+
+<ul>
+  <li><a href="http://heyes-jones.com/hnfetch/index.html">http://heyes-jones.com/hnfetch/index.html</a></li>
+</ul>
+
+<p>or watch a short video demonstration</p>
+
+<ul>
+  <li><a href="https://youtu.be/0jHG8Y3hiog">https://youtu.be/0jHG8Y3hiog</a></li>
+</ul>
+
+<h1 id="what-is-hnfetchhs-and-how-do-you-use-it">What is hnfetchhs and how do you use it?</h1>
+
+<p>The idea of this blog post and accompanying github repo is to provide an interactive demo of the Fetch library. The <code class="language-plaintext highlighter-rouge">Stories per page</code> input field lets you specify how many stories to fetch from the API, whilst the <code class="language-plaintext highlighter-rouge">Page</code> input chooses the offset. In the background I use the top stories endpoint to get the IDs of all the top stories. The number of top stories known is shown in the title bar. At anytime you can reload the top story IDs using <code class="language-plaintext highlighter-rouge">Refresh Top Stories</code>.</p>
+
+<p>Hitting the <code class="language-plaintext highlighter-rouge">Fetch Page</code> button will start a fetch job for the Ids with the current <code class="language-plaintext highlighter-rouge">Page</code>. So if you are are on page 1 and you have 30 stories per page you will get the top 30 stories as shown on Hacker News right now.</p>
+
+<p>Once a fetch has been run you can view a diagram of the fetch operation in detail using the <code class="language-plaintext highlighter-rouge">Last Fetch</code> tab. If you play around with different page numbers and stories per page you can see the cache filling up, and you will see that repeated fetches of stories will result in a Nil fetch with no data to show.</p>
+
+<p>You can also clear the current cache using the <code class="language-plaintext highlighter-rouge">Clear Cache</code>.</p>
+
+<p>All these tools together make it easy to experiment with the fetch data source and different kinds of caches etc. The rest of the post explains some of the process involved in building this app.</p>
+
+<h1 id="what-is-fetch">What is Fetch?</h1>
+
+<p>Fetch, an open source project by 47 Degs, is inspired by the Haskell library <a href="https://github.com/facebook/Haxl">Haxl</a> developed at Facebook to simplify the concurrent retrieval of data from multiple sources. You can read more about that <a href="https://simonmar.github.io/bib/papers/haxl-icfp14.pdf">There is no Fork: an Abstraction for Efficient, Concurrent, and Concise Data Access</a></p>
+
+<p>You can read more about Fetch at their documentation page <a href="https://47deg.github.io/fetch/docs.html">https://47deg.github.io/fetch/docs.html</a></p>
+
+<h1 id="converting-code-to-scalajs">Converting code to scala.js</h1>
+
+<p>This is the first time I’ve ported code written for the JVM to Scala.js so it was a learning experience but also the shortest part of the project. I created a Udash frontend using the built in project generator and started moving my code into the new project a piece at a time. It involved doing the following:</p>
+
+<h2 id="change-library-import-paths">Change library import paths</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    "com.47deg" %%% "fetch" % "0.6.3",
+    "com.lihaoyi" %%% "upickle" % "0.4.4",
+    "org.typelevel" %%% "cats" % "0.9.0"
+</code></pre></div></div>
+
+<p>This part was easy since these libraries are all available for scala.js. You just change the first <code class="language-plaintext highlighter-rouge">@@</code> to <code class="language-plaintext highlighter-rouge">@@@</code> and the scala.js library will be imported instead.</p>
+
+<h2 id="java-libraries">Java libraries</h2>
+
+<p>In my original code I used the PrettyTime library which is written in Java</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>"org.ocpsoft.prettytime" % "prettytime" % "3.2.7.Final"
+</code></pre></div></div>
+
+<p>and is not available to Scala.js since all code must be either compiled from Scala or Javascript. I found a similar library to PrettyTime called moment.js which had the functionality I needed. In order to use a Javascript library you must add it to the Assets folder and load it on your pages, and you need a <a href="https://www.scala-js.org/doc/interoperability/facade-types.html">facade type</a> to wrap the Javascript API. Fortunately there is one already for the moment.js library, so by important that you can immediately start using it as if it were a Scala library.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    "ru.pavkin" %%% "scala-js-momentjs" % "0.9.0"
+</code></pre></div></div>
+
+<h2 id="replace-scalaj-http">Replace scalaj-http</h2>
+
+<p>Since fetching HTTP pages in my original code uses the ScalaJ HTTP library</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  "org.scalaj" %% "scalaj-http" % "2.3.0"
+</code></pre></div></div>
+
+<p>and this is not available in a scala.js version, I needed to replace it. Fortunately Javascript comes with the functionality needed to make requests to a a http endpoint. This is exposed to the Ajax library in scala.js. So removing the scalaj library and replacing the calls with Ajax was all that was needed.</p>
+
+<p>You can see the implementation for this in the source file <code class="language-plaintext highlighter-rouge">HNFetch.scala</code></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> def hnRequest[T](url: String)(implicit r: Reader[T]) : Future[Either[String, T]]
+</code></pre></div></div>
+
+<h1 id="custom-datacache">Custom DataCache</h1>
+
+<p>The DataCache interface in Fetch allows you to update the cache with new elements and to get a particular element from the cache if it is there. In order to write an interactive tool to explore Fetch I wanted to be able to show the number of elements in the cache. I also wanted to be able to empty the cache, but that’s straightforward, you just replace the existing cache with a new empty one.</p>
+
+<p>Take a look at the code in <code class="language-plaintext highlighter-rouge">Cache.scala</code> for a simple DataCache implementation with the size function exposed.</p>
+
+<h1 id="udash-frontend">Udash frontend</h1>
+
+<p>The <a href="http://guide.udash.io">Udash guide</a> tells you everything you need to know to make great interactive frontends (and two kinds of backends) in a typesafe manner and entirely in Scala. I’ve used the Bootstrap add-on to utilize features such as tabbed panes to switch between the stories and the fetch diagram.</p>
+
+<h1 id="visualizing-the-fetch-rounds">Visualizing the Fetch rounds</h1>
+
+<p>Probably the most interesting part of this project, although it was also fairly easy to implement, was the visualization of each fetch round.</p>
+
+<p>For this I used reftree, and you can find out more about it in this video <a href="https://www.youtube.com/watch?v=6mWaqGHeg3g">https://www.youtube.com/watch?v=6mWaqGHeg3g</a></p>
+
+<p>Reftree takes care of the hard part of rendering the view using Javascript’s Vis.js (or GraphViz on the JVM), you just need to be able to translate your data into a <code class="language-plaintext highlighter-rouge">RefTree</code> by writing an implicit conversion:</p>
+
+<figure class="highlight"><pre><code class="language-scala" data-lang="scala">  <span class="k">implicit</span> <span class="k">def</span> <span class="nf">fetchInfoToRefTree</span><span class="k">:</span> <span class="kt">ToRefTree</span><span class="o">[</span><span class="kt">FetchInfo</span><span class="o">]</span> <span class="k">=</span> <span class="nc">ToRefTree</span><span class="o">[</span><span class="kt">FetchInfo</span><span class="o">]</span> <span class="o">{</span>
+    <span class="n">fetchInfo</span> <span class="k">=&gt;</span>
+      <span class="nv">RefTree</span><span class="o">.</span><span class="py">Ref</span><span class="o">(</span><span class="n">fetchInfo</span><span class="o">,</span> <span class="nc">Seq</span><span class="o">(</span>
+        <span class="nv">RefTree</span><span class="o">.</span><span class="py">Val</span><span class="o">(</span><span class="nv">fetchInfo</span><span class="o">.</span><span class="py">count</span><span class="o">).</span><span class="py">toField</span><span class="o">.</span><span class="py">withName</span><span class="o">(</span><span class="s">"count"</span><span class="o">),</span>
+        <span class="nv">fetchInfo</span><span class="o">.</span><span class="py">dsName</span><span class="o">.</span><span class="py">refTree</span><span class="o">.</span><span class="py">toField</span><span class="o">.</span><span class="py">withName</span><span class="o">(</span><span class="s">"datasource"</span><span class="o">)</span>
+
+      <span class="o">))</span>
+
+  <span class="o">}</span>
+
+  <span class="k">implicit</span> <span class="k">def</span> <span class="nf">roundToRefTree</span><span class="k">:</span> <span class="kt">ToRefTree</span><span class="o">[</span><span class="kt">Round</span><span class="o">]</span> <span class="k">=</span> <span class="nc">ToRefTree</span><span class="o">[</span><span class="kt">Round</span><span class="o">]</span> <span class="o">{</span>
+    <span class="n">round</span> <span class="k">=&gt;</span>
+      <span class="k">val</span> <span class="nv">fetchInfos</span> <span class="k">:</span> <span class="kt">List</span><span class="o">[</span><span class="kt">FetchInfo</span><span class="o">]</span> <span class="k">=</span> <span class="nf">getRoundCountAndDSName</span><span class="o">(</span><span class="n">round</span><span class="o">)</span>
+
+      <span class="nv">RefTree</span><span class="o">.</span><span class="py">Ref</span><span class="o">(</span><span class="n">round</span><span class="o">,</span> <span class="nc">Seq</span><span class="o">(</span>
+        <span class="nv">RefTree</span><span class="o">.</span><span class="py">Val</span><span class="o">((</span><span class="nv">round</span><span class="o">.</span><span class="py">end</span> <span class="o">-</span> <span class="nv">round</span><span class="o">.</span><span class="py">start</span><span class="o">)</span> <span class="o">/</span> <span class="mi">1000000</span><span class="o">).</span><span class="py">toField</span><span class="o">.</span><span class="py">withName</span><span class="o">(</span><span class="s">"ms"</span><span class="o">),</span>
+        <span class="nv">fetchInfos</span><span class="o">.</span><span class="py">refTree</span><span class="o">.</span><span class="py">toField</span><span class="o">.</span><span class="py">withName</span><span class="o">(</span><span class="s">"Fetches"</span><span class="o">)</span>
+      <span class="o">))</span>
+
+  <span class="o">}</span>
+  </code></pre></figure>
+
+<p>Here’s a sample diagram of the Fetch rounds</p>
+
+<p><img src="/../images/fetch.png" alt="Fetch diagram" /></p>
+
+<p>Here you can see that each round grabbed at least 8 items (that’s the number of items per round my data source specifies) and you can see the time in ms for each one. One thing to note is that the rounds are actually a queue not a list, but I found the list view was a lot easier to understand visually.</p>
+
+<h1 id="next-steps">Next steps</h1>
+
+<p>Some ideas I have for extending the project:</p>
+
+<ul>
+  <li>Do fetch and display of comments for the stories</li>
+  <li>Interactive queries around users, stories and comments</li>
+  <li>Periodic update of top stories animating the movers on the current page</li>
+</ul>
+
+<p>Feel free to fork the code on github and expand it your needs, and as always feel free to contact me at the links above with any questions or comments.</p>
+
+<p>Copyright (C) 2017 Justin-Heyes-Jones - All Rights Reserved</p>
+
+
+  </div>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-6582321-6', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+</article>
+
+
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

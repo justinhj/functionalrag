@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  <title>Hacker News API Part 4</title>
+  <meta name="description" content="Hacker News API Part 4  - Fun with Monix">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://localhost:4003/2018/05/04/hacker-news-api-4.html">
+  <link rel="alternate" type="application/rss+xml" title="Functional[Justin]" href="http://localhost:4003/feed.xml">
+</head>
+
+
+  
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-YDJ0HSM9M6"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-YDJ0HSM9M6');
+  </script>
+
+  <body>
+
+    <header class="site-header">
+  
+    <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-3">
+	<h5><a class="site-title" href="/">Functional[Justin]</a></h5>
+      </div>
+    </div>
+
+    <div class="footer-col-wrapper">
+      
+      <div class="footer-col footer-col-1">
+        <p>
+          <img class="circle" width="110px" src="/images/justinnew.png"/></p>
+
+      </div>
+      
+      <div class="footer-col footer-col-2">
+        <p>Justin is a British/Canadian software engineer at Treasure Data, functional programming, polyglot, Neovim and Emacs. </p>
+      </div>
+      
+      <div class="footer-col footer-col-3">
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/justinhj"><span class="icon icon--github"><svg viewBox="0 0 16 16"><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/></svg>
+</span><span class="username">justinhj</span></a>
+
+          </li>
+          
+	  
+	  <li>
+	    <a href="mailto:justinhj+blog@gmail.com">
+	      <span class="icon">
+		<img src="/images/email.png"/>
+	      </span>
+	      <span class="username">
+		justinhj@gmail.com
+	      </span>
+	    </a>
+	  </li>
+
+          <li>
+            <a href="https://gitter.im/justinhj">
+            <span class="icon">
+              <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 98.7 16.3" data-v-44ebcb1a=""><g><path d="M20.9,0.3h2.6v15.8h-2.6V0.3z"></path> <path d="M34.8,2.9h-4V0.3h11.8v2.6h-5.2v13.2h-2.6V2.9z"></path> <path d="M51.9,2.9h-4V0.3h11.8v2.6h-5.2v13.2h-2.6V2.9z"></path> <path d="M66.4,0.3h11.8v2.6H69v3.9h7.9v2.6H69v4h9.2v2.6H66.4V0.3z"></path> <path d="M98.7,16.1l-4.2-5.9c1.7-0.9,2.8-2.5,2.8-4.6c0-3.1-2.5-5.3-5.7-5.3l-6.2,0v15.8h2.6l0-5.3
+    c0,0,3.6,0,3.6,0l3.8,5.3H98.7z M88.1,8.2l0-5.3l3.5,0c1.7,0,3,1,3,2.6c0,1.7-1.4,2.6-3,2.6L88.1,8.2z"></path> <path d="M7.9,7.1v2.6l3.9,0c0,0,0,1.4,0,2.3c-0.1,0.2-0.4,1.8-3.8,1.8c-0.2,0-0.3,0-0.5,0
+    c-0.1,0-0.2,0-0.2,0c-0.1,0-0.2,0-0.2,0c-0.1,0-0.2-0.1-0.3-0.1c-0.1,0-0.1,0-0.2-0.1c0,0-0.1,0-0.1,0c-2.1-0.7-3.5-2.8-3.5-5.3
+    l0,0v0v0c0-0.3,0-0.5,0.1-0.8C3.3,4.7,5.4,2.5,8,2.5c0.9,0,2.5,0.3,3.6,1.5l1.5-2.2c0,0-1.3-1.9-5-1.9C3.7,0,0.4,3.3,0,7.3
+    c0,0.3,0,0.6,0,0.8l0,0l0,0c0,4.3,3.2,7.9,7.7,8.1c0.2,0,0.3,0,0.5,0c0,0,0.1,0,0.1,0c0.3,0,0.5,0,0.7,0c0.1,0,0.2,0,0.3,0
+    c0.2,0,0.3,0,0.5-0.1c2.7-0.1,4.7-2.3,4.7-3.4c0-5,0-5.7,0-5.7H7.9z"></path></g></svg>
+            </span>
+            <span class="username">
+              justinhj
+            </span>
+</a>
+          </li>
+	  <li>
+	    <a href="https://www.linkedin.com/in/justinheyesjones">
+	      <span class="icon">
+		<img src="/images/linkedin.png"/>
+	      </span>
+	      <span class="username">
+		LinkedIn
+	      </span>
+	    </a>
+	  </li>
+
+	  
+          <li>
+            <a href="https://twitter.com/justinhj"><span class="icon icon--twitter"><svg viewBox="0 0 16 16"><path fill="#828282" d="M15.969,3.058c-0.586,0.26-1.217,0.436-1.878,0.515c0.675-0.405,1.194-1.045,1.438-1.809c-0.632,0.375-1.332,0.647-2.076,0.793c-0.596-0.636-1.446-1.033-2.387-1.033c-1.806,0-3.27,1.464-3.27,3.27 c0,0.256,0.029,0.506,0.085,0.745C5.163,5.404,2.753,4.102,1.14,2.124C0.859,2.607,0.698,3.168,0.698,3.767 c0,1.134,0.577,2.135,1.455,2.722C1.616,6.472,1.112,6.325,0.671,6.08c0,0.014,0,0.027,0,0.041c0,1.584,1.127,2.906,2.623,3.206 C3.02,9.402,2.731,9.442,2.433,9.442c-0.211,0-0.416-0.021-0.615-0.059c0.416,1.299,1.624,2.245,3.055,2.271 c-1.119,0.877-2.529,1.4-4.061,1.4c-0.264,0-0.524-0.015-0.78-0.046c1.447,0.928,3.166,1.469,5.013,1.469 c6.015,0,9.304-4.983,9.304-9.304c0-0.142-0.003-0.283-0.009-0.423C14.976,4.29,15.531,3.714,15.969,3.058z"/></svg>
+</span><span class="username">justinhj</span></a>
+
+          </li>
+          
+
+	  
+        </ul>
+      </div>
+      
+    </div>
+
+    <div class="my-links">
+      <span class="page-link">
+      	<a href="/index.html">Posts by Date</a>
+       </span>
+
+      <span class="page-link">
+      	<a href="/topposts.html">Popular Posts</a>
+      </span>
+
+      <span class="page-link">
+      	<a href="https://www.youtube.com/c/FunctionalJustin">YouTube channel</a>
+       </span>
+
+      <span class="page-link">
+      	<a href="/talks.html">Speaking Events</a>
+       </span>
+
+      <span class="page-link">
+      	<a href="/privacy.html">Privacy</a>
+      </span>
+
+      </div>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        
+
+  
+
+  <!-- Iterate over the tags in this post -->
+  
+
+
+
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">Hacker News API Part 4</h1>
+    <p class="post-meta"><time datetime="2018-05-04T17:00:00-07:00" itemprop="datePublished">May 4, 2018</time></p>
+    <div class="post-meta">
+      
+        
+        
+        
+        
+        
+        
+        More posts about
+    
+      <i class="fa fa-tags"></i>
+    
+  
+        <a href="/tag/scala/">
+        Scala</a>
+        
+          ,
+        
+      
+        <a href="/tag/functional-programming/">
+        Functional Programming</a>
+        
+          ,
+        
+      
+        <a href="/tag/hacker-news-api/">
+        Hacker News Api</a>
+        
+          ,
+        
+      
+        <a href="/tag/fetch/">
+        Fetch</a>
+        
+          ,
+        
+      
+        <a href="/tag/47-degs/">
+        47 Degs</a>
+        
+          ,
+        
+      
+        <a href="/tag/typelevel/">
+        Typelevel</a>
+        
+          ,
+        
+      
+        <a href="/tag/monix/">
+        Monix</a>
+        
+      
+    </div>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <h1 id="hacker-news-api-part-4----fun-with-monix">Hacker News API Part 4  - Fun with Monix</h1>
+
+<p>Previous related posts:</p>
+<ul>
+  <li><a href="/2017/10/11/hacker-news-api-3.html">Hacker News API part 3</a></li>
+  <li><a href="/2017/07/30/hacker-news-api-2.html">Hacker News API part 2</a></li>
+  <li><a href="/2017/07/26/hacker-news-api-1.html">Hacker News API part 1</a></li>
+</ul>
+
+<p>Code referred to here can be found on Github</p>
+
+<ul>
+  <li><a href="https://github.com/justinhj/hnfetch">hnfetch</a></li>
+</ul>
+
+<p>If you didn’t read the previous 3 posts about this little learning project (or as my son calls it writing the same boring program over and over), then don’t worry because this will be self-contained and an introduction to the Monix library and a couple of fun things you can do with it.</p>
+
+<p>As a Typelevel project Monix has great documentation and high development standards, see <a href="https://monix.io">here</a> for more. The library was created by Alexandru Nedelcu and I highly recommend his entertaining and informative video presentation on the monix.io site.</p>
+
+<p>In this post, we go back to part 2 of this series where I made an interactive command line client for viewing Hacker News stories. The first step is to get the list of top stories which is a simple list of story IDs. I used the <a href="http://47deg.github.io/fetch/docs#introduction-0">Fetch</a> library from 47Degs to manage the retrieval of each story. Fetch manages the number of concurrent operations you do as well as handling caching. Under the hood Fetch is implemented using Cats <a href="https://typelevel.org/cats/datatypes/freemonad.html">Free</a></p>
+
+<p>As you can see in the image there is a bit of diagnostic information in the background showing which threads the task is running on. This helps when debugging and configuring multi-threaded code.</p>
+
+<p><img src="/../images/hnfetch.png" alt="HNFetch" /></p>
+
+<p>As is often the case when looking at old code, maybe especially your own, you see things that make you sad. In this case, there are two sad things relating to functional programming and both of them will be fixed by the end of the post. The first sad thing is the use of Future and the second is the lack of <em>composablity</em>.</p>
+
+<h1 id="the-future-of-future">The Future of Future</h1>
+
+<p>Scala’s Future is a simple to use abstraction that lets you work with values that typically will take some time to compute. Common examples are fetching some data from a database or calling a remote service endpoint. In imperative programming, you would probably have the DB operation start on another thread and ask that thread to ‘callback’ to you when it’s done. Scala’s Future provides an ExecutionContext, essentially the instructions and configuration for how to run the Future code. Every Future must have an implicit ExecutionContext in scope, although you can pass one explicitly if you like.</p>
+
+<p>Once created a Future will usually execute immediately (it could be that it is asked to run on a thread pool that is busy and it will have to wait for a place in the queue.) Once executed it will complete by setting its value (or return an error if it fails). As a user of the Future we must eventually wait for it somehow, for example using the blocking call Await.result. This will wait for the Future to get its value set by a successful operation, or for the Future’s error to be set, or finally it the Await operation itself could timeout.</p>
+
+<p>Unfortunately, this eager evaluation of Future means that it is not referentially transparent. As functional programmers we want referential transparency because it makes programs easier to reason about. I found a very nice and succinct demonstration of this problem in a <a href="https://www.reddit.com/r/scala/comments/3zofjl/why_is_future_totally_unusable/?st=jguak5en&amp;sh=8064a725">Reddit comment</a> by Rob Norris (@tpolecat):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import scala.concurrent.future
+import scala.util.Random
+import scala.concurrent.ExecutionContext.Implicits.global
+
+val f1 = { 
+  val r = new Random(0L)
+  val x = Future(r.nextInt)
+  for { 
+    a &lt;- x
+    b &lt;- x
+  } yield (a, b) 
+}
+
+// Same as f1, but I inlined `x`
+val f2 = { 
+  val r = new Random(0L)
+  for { 
+    a &lt;- Future(r.nextInt)
+    b &lt;- Future(r.nextInt)
+  } yield (a, b) 
+}
+</code></pre></div></div>
+
+<p>In this example, we are running some side-effecting code in the Future (generating a random number mutates the Random object by updating its seed). The result of running f1 is:</p>
+
+<p><code class="language-plaintext highlighter-rouge">Future[(Int, Int)] = Future(Success((-1155484576,-1155484576)))</code></p>
+
+<p>Whilst f2 gives:</p>
+
+<p><code class="language-plaintext highlighter-rouge">Future[(Int, Int)] = Future(Success((-1155484576,-723955400)))</code></p>
+
+<p>For referential transparency, we can take any function and its arguments and replace it with the result.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>val x = something
+(x, x)
+</code></pre></div></div>
+
+<p>should be the same as</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(something, something)
+</code></pre></div></div>
+
+<p>That is broken in the Future example above because x in the first example is eagerly evaluated on creation, and the random value is fixed (memoized) for as long as the Future exists.</p>
+
+<h1 id="monix-task">Monix Task</h1>
+
+<p>Monix provides Task that we can use instead of Future. It adds a lot of features, most notably for our purposes is that it allows us to lazily evaluate our code. In fact, that is the default. In the Future example above we can simply replace Future with Task and we will find that referential transparency is restored:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import monix.
+import scala.util.Random
+import monix.execution.Scheduler.Implicits.global
+ 
+val t1 = { 
+  val r = new Random(0L)
+  val x = Task(r.nextInt)
+  for { 
+    a &lt;- x
+    b &lt;- x
+  } yield (a, b) 
+}
+
+// Same as f1, but I inlined `x`
+val t2 = { 
+  val r = new Random(0L)
+  for { 
+    a &lt;- Task(r.nextInt)
+    b &lt;- Task(r.nextInt)
+  } yield (a, b) 
+}
+</code></pre></div></div>
+
+<p>Now you’ll find that both t1 and t2 return the same value <code class="language-plaintext highlighter-rouge">(-1155484576,-723955400)</code></p>
+
+<p>Besides that Monix Tasks have a lot of features and improvements over the Scala Future. For example, Monix Tasks do not require an execution context for their create, map and flatMap operations. In fact, you don’t need to provide one until you actually run something, which can be in one nicely contained place in your program ‘at the end of the world’. The Monix Scheduler has an ExecutionContext and includes features such as running a Task after a delay or repeatedly.</p>
+
+<p>Another advantage of the Task object being so full featured is that we can wrap all the parts of our program using it and then compose them neatly at will. Due to the way flatMap is defined you cannot use different effect types. That means you end up with ugly for comprehensions where most of the flatMaps are operating on a certain effect such as Future or Option, but there are outliers that have to be cast in-line. If we write our program in terms of simple Task’s we can compose them without having to worry about the effect type not lining up.</p>
+
+<h1 id="changes-to-the-hnfetch-code">Changes to the HNFetch code</h1>
+
+<p>In order to convert my Hacker News fetch command-line code from an essentially imperative Scala program to one that is composed of Task’s took a few simple steps:</p>
+
+<h2 id="library-imports">Library Imports</h2>
+
+<p>I updated the Fetch library version and brought in the fetch-monix integration which allows you to use Monix Task when running Fetch operations.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>val fetchVersion = "0.7.2"
+
+libraryDependencies ++= Seq(
+  "com.47deg" %% "fetch" % fetchVersion,
+  "com.47deg" %% "fetch-monix" % fetchVersion)
+</code></pre></div></div>
+
+<p>Fetch will bring in the Monix library but I also wanted the <code class="language-plaintext highlighter-rouge">monix-reactive</code> module for something we’ll see later in the post, so I brought that in manually.</p>
+
+<p><code class="language-plaintext highlighter-rouge">"io.monix" %% "monix-reactive" % "3.0.0-M3"</code></p>
+
+<p>Fetch documentation for working with Monix is <a href="http://47deg.github.io/fetch/docs#concurrency-monads-7-monix-task-1">here</a>.</p>
+
+<h2 id="hndatasourcesscala"><a href="https://github.com/justinhj/hnfetch/blob/master/src/main/scala/justinhj/hnfetch/HNDataSources.scala">HNDataSources.scala</a></h2>
+
+<p>This is not really related to the process of replacing Future with Task but a refactor to replace Query.async calls with Query.sync. This goes hand in hand with removing Future from other parts of the program. Since my http library is synchronous, and Fetch can handle synchronous functions, this change made sense. Note that this file no longer has any reference to Future or Monix Task which makes it more flexible. The caller should be able to specify the effect type.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    override def fetchOne(id: HNUserID): Query[Option[HNUser]] = {
+
+      Query.sync(HNFetch.getUser(id) match {
+        case Right(a) =&gt; Some(a)
+        case Left(_) =&gt; None
+      })
+    }
+</code></pre></div></div>
+
+<h2 id="hnfetchscala"><a href="https://github.com/justinhj/hnfetch/blob/master/src/main/scala/justinhj/hnfetch/HNFetch.scala">HNFetch.scala</a></h2>
+
+<p>In this code most of the changes were removing Future from functions that can actually be simply synchronous. We’ll later let Monix Task handle scheduling them on threads. The one exception is the function <code class="language-plaintext highlighter-rouge">getTopItems</code> which will we call as a single Task (the other http gets are made by Fetch itself and will be wrapped by Tasks later). So in refactoring, I’ve created a Sync (blocking) and a regular (Task wrapped) version of the supported Hacker News API.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  def getTopItems(): Task[Either[String, HNItemIDList]] = Task.eval {
+    hnRequest[HNItemIDList](getTopItemsURL)
+  }
+</code></pre></div></div>
+
+<h2 id="frontpagewithfetchscala"><a href="https://github.com/justinhj/hnfetch/blob/master/src/main/scala/examples/FrontPageWithFetch.scala">FrontpageWithFetch.scala</a></h2>
+
+<p>Note that all the side effects in the program now occur in Task objects. We can <em>compose</em> the program together from these small pieces using all the functional programming tools we have available. This is the main loop, asking for user input and showing the next news items:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+  def showPagesLoop(topItems: HNItemIDList, cache: Option[DataSourceCache]): Task[Option[DataSourceCache]] =
+
+  // Here we will show the page of items or exit if the user didn't enter a number
+    getUserPage.flatMap {
+
+      case Some(page) =&gt;
+        println(s"fetch page $page")
+
+        for (
+          fetchResult &lt;- fetchPage(page, numItemsPerPage, topItems, cache);
+          (env, items) = fetchResult;
+          _ = println(s"${env.rounds.size} fetch rounds");
+          _ &lt;- printPageItems(page, numItemsPerPage, items);
+          newCache &lt;- showPagesLoop(topItems, Some(env.cache))
+        ) yield newCache
+
+
+      case None =&gt;
+        Task.now(cache)
+    }
+</code></pre></div></div>
+
+<p>and the main loop:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+  // Set a fixed size pool with a small number of threads so we can be nice to the Hacker News servers by
+  // limiting the number of concurrent requests
+  val scheduler = monix.execution.Scheduler.fixedPool("monix-pool", 4, true)
+
+  def main(args : Array[String]) : Unit = {
+
+    // Finally the main program consists of getting the list of top item IDs and then calling the loop ...
+
+    val program = getTopItems().flatMap {
+      case Right(items) =&gt;
+        showPagesLoop(items, None)
+      case Left(err) =&gt;
+        printError(err)
+    }
+
+    val ran = program.runAsync(scheduler)
+    Await.result(ran, Duration.Inf)
+
+  }
+
+}
+</code></pre></div></div>
+
+<h1 id="so">So?</h1>
+
+<p>With a few changes, we’ve turned a simple ugly program that used old-fashioned Futures and was not at all composable into a much more useful program made of small composable parts. If you don’t believe me then check out the old code <a href="https://github.com/justinhj/hnfetch/blob/blogpost2/src/main/scala/examples/FrontPageWithFetch.scala">here</a></p>
+
+<p>Not only is the new code easier to read, we now have the parts that make it up available to easily make new programs.</p>
+
+<h1 id="a-small-demo-of-monix-reactive">A small demo of Monix Reactive</h1>
+
+<p>I’m just getting started learning about what the Monix library, but I spent a few minutes playing around in the <a href="http://ammonite.io/">Ammonite</a> REPL and had a lot of fun. For example, Hacker News has a MaxItem API, which tells you the ID of the last posted item (it increase monotonically). So I used the Monix Observer (part of the reactive module) to generate a tick every 30 seconds at which point you can execute a Task. These few lines of code will check Hacker News every 30 seconds and print the latest comment:</p>
+
+<p><img src="/../images/livecomments.png" alt="Live comments" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import monix.eval.Task
+import scala.concurrent.duration._
+import scala.concurrent.Await
+import justinhj.hnfetch.HNFetch._
+import monix.execution.Scheduler.Implicits.global
+import monix.reactive._
+
+def latestComment = getMaxItem.flatMap {
+    case Right(itemId) =&gt;
+      getItem(itemId).flatMap {
+        case Right(item) if item.`type` == "comment" =&gt;
+          Task(println(s""""${item.text}" - ${item.by}"""))
+        case Right(item) =&gt;
+          Task.unit
+        case Left(err) =&gt;
+          Task(println(s"error $err"))
+      }
+    case Left(err) =&gt;
+      Task(println(s"error $err"))
+  } 
+
+val s1 = Observable.interval(10 seconds).take(10)
+val c1 = s1.mapTask(_ =&gt; latestComment).subscribe 
+
+// Starts showing messages every 30 seconds (ten times)
+
+// When you get bored...
+
+c1.cancel
+</code></pre></div></div>
+
+<p>I leave you with the first comment that came up</p>
+
+<p><code class="language-plaintext highlighter-rouge">"Human kind will be gone in 1000 years? That’s a pessimistic view. I hope not!" - camdenreslink</code></p>
+
+<p>Copyright (C) 2018 Justin-Heyes-Jones - All Rights Reserved</p>
+
+  </div>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-6582321-6', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+</article>
+
+
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

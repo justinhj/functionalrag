@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  <title>Scala 3 Context Functions</title>
+  <meta name="description" content="Some Scala 3 Things: Context functions, Enums and significant whitespaceUpdated: for Scala 3.0.0-M3 `as` keyword was removed">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://localhost:4003/2020/11/18/scala-3-context-functions.html">
+  <link rel="alternate" type="application/rss+xml" title="Functional[Justin]" href="http://localhost:4003/feed.xml">
+</head>
+
+
+  
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-YDJ0HSM9M6"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-YDJ0HSM9M6');
+  </script>
+
+  <body>
+
+    <header class="site-header">
+  
+    <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-3">
+	<h5><a class="site-title" href="/">Functional[Justin]</a></h5>
+      </div>
+    </div>
+
+    <div class="footer-col-wrapper">
+      
+      <div class="footer-col footer-col-1">
+        <p>
+          <img class="circle" width="110px" src="/images/justinnew.png"/></p>
+
+      </div>
+      
+      <div class="footer-col footer-col-2">
+        <p>Justin is a British/Canadian software engineer at Treasure Data, functional programming, polyglot, Neovim and Emacs. </p>
+      </div>
+      
+      <div class="footer-col footer-col-3">
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/justinhj"><span class="icon icon--github"><svg viewBox="0 0 16 16"><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/></svg>
+</span><span class="username">justinhj</span></a>
+
+          </li>
+          
+	  
+	  <li>
+	    <a href="mailto:justinhj+blog@gmail.com">
+	      <span class="icon">
+		<img src="/images/email.png"/>
+	      </span>
+	      <span class="username">
+		justinhj@gmail.com
+	      </span>
+	    </a>
+	  </li>
+
+          <li>
+            <a href="https://gitter.im/justinhj">
+            <span class="icon">
+              <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 98.7 16.3" data-v-44ebcb1a=""><g><path d="M20.9,0.3h2.6v15.8h-2.6V0.3z"></path> <path d="M34.8,2.9h-4V0.3h11.8v2.6h-5.2v13.2h-2.6V2.9z"></path> <path d="M51.9,2.9h-4V0.3h11.8v2.6h-5.2v13.2h-2.6V2.9z"></path> <path d="M66.4,0.3h11.8v2.6H69v3.9h7.9v2.6H69v4h9.2v2.6H66.4V0.3z"></path> <path d="M98.7,16.1l-4.2-5.9c1.7-0.9,2.8-2.5,2.8-4.6c0-3.1-2.5-5.3-5.7-5.3l-6.2,0v15.8h2.6l0-5.3
+    c0,0,3.6,0,3.6,0l3.8,5.3H98.7z M88.1,8.2l0-5.3l3.5,0c1.7,0,3,1,3,2.6c0,1.7-1.4,2.6-3,2.6L88.1,8.2z"></path> <path d="M7.9,7.1v2.6l3.9,0c0,0,0,1.4,0,2.3c-0.1,0.2-0.4,1.8-3.8,1.8c-0.2,0-0.3,0-0.5,0
+    c-0.1,0-0.2,0-0.2,0c-0.1,0-0.2,0-0.2,0c-0.1,0-0.2-0.1-0.3-0.1c-0.1,0-0.1,0-0.2-0.1c0,0-0.1,0-0.1,0c-2.1-0.7-3.5-2.8-3.5-5.3
+    l0,0v0v0c0-0.3,0-0.5,0.1-0.8C3.3,4.7,5.4,2.5,8,2.5c0.9,0,2.5,0.3,3.6,1.5l1.5-2.2c0,0-1.3-1.9-5-1.9C3.7,0,0.4,3.3,0,7.3
+    c0,0.3,0,0.6,0,0.8l0,0l0,0c0,4.3,3.2,7.9,7.7,8.1c0.2,0,0.3,0,0.5,0c0,0,0.1,0,0.1,0c0.3,0,0.5,0,0.7,0c0.1,0,0.2,0,0.3,0
+    c0.2,0,0.3,0,0.5-0.1c2.7-0.1,4.7-2.3,4.7-3.4c0-5,0-5.7,0-5.7H7.9z"></path></g></svg>
+            </span>
+            <span class="username">
+              justinhj
+            </span>
+</a>
+          </li>
+	  <li>
+	    <a href="https://www.linkedin.com/in/justinheyesjones">
+	      <span class="icon">
+		<img src="/images/linkedin.png"/>
+	      </span>
+	      <span class="username">
+		LinkedIn
+	      </span>
+	    </a>
+	  </li>
+
+	  
+          <li>
+            <a href="https://twitter.com/justinhj"><span class="icon icon--twitter"><svg viewBox="0 0 16 16"><path fill="#828282" d="M15.969,3.058c-0.586,0.26-1.217,0.436-1.878,0.515c0.675-0.405,1.194-1.045,1.438-1.809c-0.632,0.375-1.332,0.647-2.076,0.793c-0.596-0.636-1.446-1.033-2.387-1.033c-1.806,0-3.27,1.464-3.27,3.27 c0,0.256,0.029,0.506,0.085,0.745C5.163,5.404,2.753,4.102,1.14,2.124C0.859,2.607,0.698,3.168,0.698,3.767 c0,1.134,0.577,2.135,1.455,2.722C1.616,6.472,1.112,6.325,0.671,6.08c0,0.014,0,0.027,0,0.041c0,1.584,1.127,2.906,2.623,3.206 C3.02,9.402,2.731,9.442,2.433,9.442c-0.211,0-0.416-0.021-0.615-0.059c0.416,1.299,1.624,2.245,3.055,2.271 c-1.119,0.877-2.529,1.4-4.061,1.4c-0.264,0-0.524-0.015-0.78-0.046c1.447,0.928,3.166,1.469,5.013,1.469 c6.015,0,9.304-4.983,9.304-9.304c0-0.142-0.003-0.283-0.009-0.423C14.976,4.29,15.531,3.714,15.969,3.058z"/></svg>
+</span><span class="username">justinhj</span></a>
+
+          </li>
+          
+
+	  
+        </ul>
+      </div>
+      
+    </div>
+
+    <div class="my-links">
+      <span class="page-link">
+      	<a href="/index.html">Posts by Date</a>
+       </span>
+
+      <span class="page-link">
+      	<a href="/topposts.html">Popular Posts</a>
+      </span>
+
+      <span class="page-link">
+      	<a href="https://www.youtube.com/c/FunctionalJustin">YouTube channel</a>
+       </span>
+
+      <span class="page-link">
+      	<a href="/talks.html">Speaking Events</a>
+       </span>
+
+      <span class="page-link">
+      	<a href="/privacy.html">Privacy</a>
+      </span>
+
+      </div>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        
+
+  
+
+  <!-- Iterate over the tags in this post -->
+  
+
+
+
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">Scala 3 Context Functions</h1>
+    <p class="post-meta"><time datetime="2020-11-18T00:00:00-08:00" itemprop="datePublished">Nov 18, 2020</time></p>
+    <div class="post-meta">
+      
+        
+        
+        More posts about
+    
+      <i class="fa fa-tags"></i>
+    
+  
+        <a href="/tag/scala/">
+        Scala</a>
+        
+          ,
+        
+      
+        <a href="/tag/scala-3/">
+        Scala 3</a>
+        
+          ,
+        
+      
+        <a href="/tag/dotty/">
+        Dotty</a>
+        
+      
+    </div>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <link rel="stylesheet" type="text/css" href="../../../_orgcss/site.css" />
+<div id="outline-container-orgf6c3f62" class="outline-2">
+<h2 id="orgf6c3f62">Some Scala 3 Things: Context functions, Enums and significant whitespace</h2>
+<div class="outline-text-2" id="text-orgf6c3f62">
+<p>
+<code>Updated: for Scala 3.0.0-M3 `as` keyword was removed</code>
+</p>
+
+<p>
+This is the companion blog for my first Functional Justin video which you can find here <a href="https://youtu.be/J01u_Dmrx5U">https://youtu.be/J01u_Dmrx5U</a>. I spend around 15 minutes adding some Scala 3 (formerly Dotty) features to an Scala 2 program.
+</p>
+
+<p>
+The program itself builds a simple Algebraic Data Type (ADT) to represent a simple arithmetic expressions. We can then build expressions in this <code>algebra</code> and evaluate it using an eval function using pattern matching&#x2026;
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scala"><span style="color: #f78fe7;">sealed</span> <span style="color: #b6a0ff;">trait</span> <span style="color: #6ae4b9;">Exp</span>
+<span style="color: #b6a0ff;">case</span> <span style="color: #b6a0ff;">class</span> <span style="color: #6ae4b9;">Val</span>(value<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">Int</span>) <span style="color: #b6a0ff;">extends</span> <span style="color: #6ae4b9;">Exp</span>
+<span style="color: #b6a0ff;">case</span> <span style="color: #b6a0ff;">class</span> <span style="color: #6ae4b9;">Add</span>(left<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">Exp</span>, right<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">Exp</span>) <span style="color: #b6a0ff;">extends</span> <span style="color: #6ae4b9;">Exp</span>
+<span style="color: #b6a0ff;">case</span> <span style="color: #b6a0ff;">class</span> <span style="color: #6ae4b9;">Mul</span>(left<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">Exp</span>, right<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">Exp</span>) <span style="color: #b6a0ff;">extends</span> <span style="color: #6ae4b9;">Exp</span>
+<span style="color: #b6a0ff;">case</span> <span style="color: #b6a0ff;">class</span> <span style="color: #6ae4b9;">Var</span>(identifier<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">String</span>) <span style="color: #b6a0ff;">extends</span> <span style="color: #6ae4b9;">Exp</span>
+</pre>
+</div>
+
+<p>
+Now given an expression like <code>Mul(Var("z"), Add(Val(30), Mul(Var("x"), Var("y"))))</code> I'd like to be able to recursively traverse it and calculate a final Int value at the end.
+</p>
+
+<p>
+<code>Val</code> represents an Int value, whilst <code>Add</code> and <code>Mul</code> take care of addition and multiplication. You could go ahead and add more functions. <code>Var</code> is interesting because it takes an a string identifier (i.e., a variable name) and will look it up in an environment. The environment is represented a Scala map of String to Int.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scala"><span style="color: #b6a0ff;">type</span> <span style="color: #00bcff;">Env</span> <span style="color: #b6a0ff;">=</span> <span style="color: #00bcff;">Map</span>[<span style="color: #00bcff;">String</span>, <span style="color: #00bcff;">Int</span>]
+</pre>
+</div>
+
+<p>
+For the eval function we just use a pattern match to dispatch to functions that handle each particular operation. These handler functions and eval are <code>mutally recursive</code>, and note that every function has to have the <code>Env</code> passed to it as an implicit parameter, yet only <code>Var</code> needs it. This will be important later.
+</p>
+
+<p>
+Here's the eval function and handlers.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scala"><span style="color: #b6a0ff;">def</span> <span style="color: #feacd0;">eval</span>(exp<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">Exp</span>)(<span style="color: #f78fe7;">implicit</span> env <span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">Env</span>)<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">Int</span> <span style="color: #b6a0ff;">=</span> {
+  exp <span style="color: #b6a0ff;">match</span> {
+    <span style="color: #b6a0ff;">case</span> <span style="color: #6ae4b9;">Var</span>(<span style="color: #00d3d0;">id</span>) <span style="color: #b6a0ff;">=&gt;</span> handleVar(id)
+    <span style="color: #b6a0ff;">case</span> <span style="color: #6ae4b9;">Val</span>(<span style="color: #00d3d0;">value</span>) <span style="color: #b6a0ff;">=&gt;</span> value
+    <span style="color: #b6a0ff;">case</span> <span style="color: #6ae4b9;">Add</span>(<span style="color: #00d3d0;">l</span>,<span style="color: #00d3d0;">r</span>) <span style="color: #b6a0ff;">=&gt;</span> handleAdd(l,r)
+    <span style="color: #b6a0ff;">case</span> <span style="color: #6ae4b9;">Mul</span>(<span style="color: #00d3d0;">l</span>,<span style="color: #00d3d0;">r</span>) <span style="color: #b6a0ff;">=&gt;</span> handleMul(l,r)
+  }
+}
+
+<span style="color: #b6a0ff;">def</span> <span style="color: #feacd0;">handleAdd</span>(l<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">Exp</span>, r<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">Exp</span>)(<span style="color: #f78fe7;">implicit</span> env <span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">Env</span>) <span style="color: #b6a0ff;">=</span> eval(l) + eval(r)
+<span style="color: #b6a0ff;">def</span> <span style="color: #feacd0;">handleMul</span>(l<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">Exp</span>, r<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">Exp</span>)(<span style="color: #f78fe7;">implicit</span> env <span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">Env</span>) <span style="color: #b6a0ff;">=</span> eval(l) * eval(r)
+<span style="color: #b6a0ff;">def</span> <span style="color: #feacd0;">handleVar</span>(s<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">String</span>)(<span style="color: #f78fe7;">implicit</span> env<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">Env</span>) <span style="color: #b6a0ff;">=</span> env.getOrElse(s, <span style="color: #00bcff;">0</span>)
+</pre>
+</div>
+
+<p>
+Note that we could have inlined these functions in eval, but it a larger example it's important to break things out to keep things managable.
+</p>
+
+<p>
+That is all the implementation we need, and all that remains is to create an expression, create an environment (declared implicit so Scala knows to include it as an implicit when eval is called) and print the result of evaluating the expression.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scala"><span style="color: #b6a0ff;">val</span> <span style="color: #00d3d0;">exp1</span> <span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">Exp</span> <span style="color: #b6a0ff;">=</span> <span style="color: #00bcff;">Mul</span>(<span style="color: #00bcff;">Var</span>(<span style="color: #79a8ff;">"z"</span>), <span style="color: #00bcff;">Add</span>(<span style="color: #00bcff;">Val</span>(<span style="color: #00bcff;">30</span>), <span style="color: #00bcff;">Mul</span>(<span style="color: #00bcff;">Var</span>(<span style="color: #79a8ff;">"x"</span>), <span style="color: #00bcff;">Var</span>(<span style="color: #79a8ff;">"y"</span>))))
+
+<span style="color: #f78fe7;">implicit</span> <span style="color: #b6a0ff;">val</span> <span style="color: #00d3d0;">env</span> <span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">Env</span> <span style="color: #b6a0ff;">=</span> <span style="color: #00bcff;">Map</span>(<span style="color: #79a8ff;">"x"</span> -&gt; <span style="color: #00bcff;">17</span>, <span style="color: #79a8ff;">"y"</span> -&gt; <span style="color: #00bcff;">10</span>, <span style="color: #79a8ff;">"z"</span> -&gt; <span style="color: #00bcff;">2</span>)
+<span style="color: #b6a0ff;">val</span> <span style="color: #00d3d0;">eval1</span> <span style="color: #b6a0ff;">=</span> eval(exp1)
+
+println(s<span style="color: #79a8ff;">"Eval exp gives </span><span style="color: #00d3d0;">$eval1</span><span style="color: #79a8ff;">"</span>)
+</pre>
+</div>
+
+<p>
+You can compile and run the code to see this working. The code is here. <a href="https://github.com/justinhj/evalexample/blob/master/src/main/scala/Scala2Eval.scala">https://github.com/justinhj/evalexample/blob/master/src/main/scala/Scala2Eval.scala</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb5b329b" class="outline-2">
+<h2 id="orgb5b329b">Fun with Enum</h2>
+<div class="outline-text-2" id="text-orgb5b329b">
+<p>
+Scala enums have been improved greatly. For one they are very simple to create and use just as in other languages.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scala">enum <span style="color: #00bcff;">StatusCode</span><span style="color: #b6a0ff;">:</span>
+   <span style="color: #b6a0ff;">case</span> <span style="color: #00bcff;">OK</span>, <span style="color: #00bcff;">TimedOut</span>, <span style="color: #00bcff;">Error</span>
+</pre>
+</div>
+
+<p>
+Here we've defined three enums that have ordinal values 0 to 2. You can access the ordinal value with the <code>.ordinal</code> method, convert ordinal values to Enums using <code>.fromOrdinal</code> and convert Strings to enums (assuming they match) with <code>.valueOf</code>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scala">println(s<span style="color: #79a8ff;">"Ordinal value of StatusCode.Error is </span><span style="color: #00d3d0;">${StatusCode.Error.ordinal}</span><span style="color: #79a8ff;">"</span>)
+println(s<span style="color: #79a8ff;">"StatusCode from ordinal 1 is </span><span style="color: #00d3d0;">${StatusCode.fromOrdinal(1)}</span><span style="color: #79a8ff;">"</span>)
+println(s<span style="color: #79a8ff;">"StatusCode from string OK is </span><span style="color: #00d3d0;">${StatusCode.valueOf("OK")}</span><span style="color: #79a8ff;">"</span>)
+
+<span style="color: #a8a8a8;">// </span><span style="color: #a8a8a8;">Ordinal value of StatusCode.Error is 2</span>
+<span style="color: #a8a8a8;">// </span><span style="color: #a8a8a8;">StatusCode from ordinal 1 is TimedOut</span>
+<span style="color: #a8a8a8;">// </span><span style="color: #a8a8a8;">StatusCode from string OK is OK</span>
+</pre>
+</div>
+
+<p>
+You can also add your own parameters and definitions to enums. The underlying ordinal values are still there. For example you could encode Http Status codes as follows.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scala">enum <span style="color: #00bcff;">HttpStatusCode</span>(code<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">Int</span>) {
+  <span style="color: #b6a0ff;">case</span> <span style="color: #00bcff;">OK</span> <span style="color: #b6a0ff;">extends</span> <span style="color: #6ae4b9;">HttpStatusCode</span>(<span style="color: #00bcff;">200</span>)
+  <span style="color: #b6a0ff;">case</span> <span style="color: #00bcff;">NotModified</span> <span style="color: #b6a0ff;">extends</span> <span style="color: #6ae4b9;">HttpStatusCode</span>(<span style="color: #00bcff;">304</span>)
+  <span style="color: #b6a0ff;">case</span> <span style="color: #00bcff;">Forbidden</span> <span style="color: #b6a0ff;">extends</span> <span style="color: #6ae4b9;">HttpStatusCode</span>(<span style="color: #00bcff;">404</span>)
+
+  <span style="color: #b6a0ff;">def</span> <span style="color: #feacd0;">isSuccess</span> <span style="color: #b6a0ff;">=</span> code &gt;= <span style="color: #00bcff;">200</span> &amp;&amp; code &lt; <span style="color: #00bcff;">300</span>
+}
+</pre>
+</div>
+
+<p>
+Scala 3 team also took the opportunity to make Enums <code>a more concise notation for ADTs and GADTs</code>. For our purposes that means we can simply the definition of <code>Exp</code> as follows.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scala">enum <span style="color: #00bcff;">Exp</span> {
+  <span style="color: #b6a0ff;">case</span> <span style="color: #6ae4b9;">Val</span>(<span style="color: #00d3d0;">value</span><span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">Int</span>) <span style="color: #b6a0ff;">extends</span> <span style="color: #6ae4b9;">Exp</span>
+  <span style="color: #b6a0ff;">case</span> <span style="color: #6ae4b9;">Add</span>(<span style="color: #00d3d0;">left</span><span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">Exp</span>, <span style="color: #00d3d0;">right</span><span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">Exp</span>) <span style="color: #b6a0ff;">extends</span> <span style="color: #6ae4b9;">Exp</span>
+  <span style="color: #b6a0ff;">case</span> <span style="color: #6ae4b9;">Var</span>(<span style="color: #00d3d0;">identifier</span><span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">String</span>) <span style="color: #b6a0ff;">extends</span> <span style="color: #6ae4b9;">Exp</span>
+}
+</pre>
+</div>
+
+<p>
+In fact you can further simplify to the following (you could also remove the braces).
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scala">enum <span style="color: #00bcff;">Exp</span> {
+  <span style="color: #b6a0ff;">case</span> <span style="color: #6ae4b9;">Val</span>(<span style="color: #00d3d0;">value</span><span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">Int</span>)
+  <span style="color: #b6a0ff;">case</span> <span style="color: #6ae4b9;">Add</span>(<span style="color: #00d3d0;">left</span><span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">Exp</span>, <span style="color: #00d3d0;">right</span><span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">Exp</span>)
+  <span style="color: #b6a0ff;">case</span> <span style="color: #6ae4b9;">Var</span>(<span style="color: #00d3d0;">identifier</span><span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">String</span>)
+}
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf9c19ca" class="outline-2">
+<h2 id="orgf9c19ca">Explicit implicits</h2>
+<div class="outline-text-2" id="text-orgf9c19ca">
+<p>
+A focus of the Scala 3 team is to help beginners access the language and in particular simplifying implicits. There are many subtle changes here but two obvious ones are that you now have different keywords for implicit parameters and creating implicit instances. In our code this means that when we supply the implicit symbol table to eval we now use the new <code>given</code> syntax instead of <code>implicit</code>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scala"><span style="color: #f78fe7;">implicit</span> <span style="color: #b6a0ff;">val</span> <span style="color: #00d3d0;">env</span> <span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">Env</span> <span style="color: #b6a0ff;">=</span> <span style="color: #00bcff;">Map</span>(<span style="color: #79a8ff;">"x"</span> -&gt; <span style="color: #00bcff;">17</span>, <span style="color: #79a8ff;">"y"</span> -&gt; <span style="color: #00bcff;">10</span>, <span style="color: #79a8ff;">"z"</span> -&gt; <span style="color: #00bcff;">2</span>)
+</pre>
+</div>
+
+<p>
+becomes&#x2026;
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scala">given envMap<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">Env</span> <span style="color: #b6a0ff;">=</span> <span style="color: #00bcff;">Map</span>(<span style="color: #79a8ff;">"x"</span> -&gt; <span style="color: #00bcff;">7</span>, <span style="color: #79a8ff;">"y"</span> -&gt; <span style="color: #00bcff;">6</span>, <span style="color: #79a8ff;">"z"</span> -&gt; <span style="color: #00bcff;">22</span>)
+</pre>
+</div>
+
+<p>
+Similarly, the method parameters now no longer use the implicit keyword and instead you prefix the parameter name with <code>using</code>.
+</p>
+
+<pre class="example">
+def eval(exp: Exp)(implicit env : Env): Int
+</pre>
+
+<p>
+becomes&#x2026;
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scala"><span style="color: #b6a0ff;">def</span> <span style="color: #feacd0;">eval</span>(exp<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">Exp</span>)(using env <span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">Env</span>)<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">Int</span>
+</pre>
+</div>
+
+<p>
+You don't have to change your Scala 2 code at this point, it is still compatible, but for new code and in the long term you should gradually eliminate implicit.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org08f0809" class="outline-2">
+<h2 id="org08f0809">Context Functions</h2>
+<div class="outline-text-2" id="text-org08f0809">
+<p>
+Last and not at all least are context functions. This gives us one more opportunity to remove boiler plate from the eval code. When you create a regular function value it has a type like <code>Function1[A,B]</code>. In other words it is a function that takes a value A and returns vale of type B. Context Functions are a new function value type (this is synthesized by the compiler so you won't see it your code), with an input and an output type. The difference is that the input is understood to be provided implicitly.
+</p>
+
+<p>
+Let's make this more concrete. Assume you have a function that needs an <code>ExecutionContext</code>. We can make a Context Function type that will take an implicit execution context and return some paramaterized type T.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scala"><span style="color: #b6a0ff;">type</span> <span style="color: #00bcff;">Executable</span>[<span style="color: #00bcff;">T</span>] <span style="color: #b6a0ff;">=</span> <span style="color: #00bcff;">ExecutionContext</span> ?=&gt; <span style="color: #00bcff;">T</span>
+</pre>
+</div>
+
+<p>
+How would that be used in a real program? Let's say you have some deeply nested function (f4 in the code below) and it is only down at that level you need the implicit execution context. Without implicit parameters you'd add the ExecutionContext parameter to every single function call all the way down and then have to take care to pass it along. With Scala 2 implicits you still have to declare the parameter but you can make it implicit and avoid the burden of manually passing it along.
+</p>
+
+<p>
+With Scala 3 you can define the function to be of type <code>Executable[T]</code> and then we don't need to even name the implicit parameter, we just know that it will be included automatically all the way down. Here is a complete example.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scala"><span style="color: #b6a0ff;">import</span> scala.concurrent.{<span style="color: #00bcff;">Future</span>, <span style="color: #00bcff;">ExecutionContext</span>, <span style="color: #00bcff;">Await</span>}
+<span style="color: #b6a0ff;">import</span> scala.concurrent.duration.<span style="color: #b6a0ff;">_</span>
+<span style="color: #b6a0ff;">import</span> scala.language.postfixOps
+
+<span style="color: #b6a0ff;">object</span> <span style="color: #00bcff;">Executable</span> <span style="color: #b6a0ff;">extends</span> <span style="color: #6ae4b9;">App</span> {
+
+  <span style="color: #b6a0ff;">type</span> <span style="color: #00bcff;">Executable</span>[<span style="color: #00bcff;">T</span>] <span style="color: #b6a0ff;">=</span> <span style="color: #00bcff;">ExecutionContext</span> ?=&gt; <span style="color: #00bcff;">T</span>
+
+  <span style="color: #b6a0ff;">def</span> <span style="color: #feacd0;">f1</span>(n<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">Int</span>)<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">Executable</span>[<span style="color: #00bcff;">Future</span>[<span style="color: #00bcff;">Int</span>]] <span style="color: #b6a0ff;">=</span> f2(n + <span style="color: #00bcff;">1</span>)
+  <span style="color: #b6a0ff;">def</span> <span style="color: #feacd0;">f2</span>(n<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">Int</span>)<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">Executable</span>[<span style="color: #00bcff;">Future</span>[<span style="color: #00bcff;">Int</span>]] <span style="color: #b6a0ff;">=</span> f3(n + <span style="color: #00bcff;">1</span>)
+  <span style="color: #b6a0ff;">def</span> <span style="color: #feacd0;">f3</span>(n<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">Int</span>)<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">Executable</span>[<span style="color: #00bcff;">Future</span>[<span style="color: #00bcff;">Int</span>]] <span style="color: #b6a0ff;">=</span> f4(n + <span style="color: #00bcff;">1</span>)
+  <span style="color: #b6a0ff;">def</span> <span style="color: #feacd0;">f4</span>(n<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">Int</span>)<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">Executable</span>[<span style="color: #00bcff;">Future</span>[<span style="color: #00bcff;">Int</span>]] <span style="color: #b6a0ff;">=</span> {
+    <span style="color: #b6a0ff;">val</span> <span style="color: #00d3d0;">ex</span> <span style="color: #b6a0ff;">=</span> summon[<span style="color: #00bcff;">ExecutionContext</span>]
+    <span style="color: #00bcff;">Future</span> {
+      println(s<span style="color: #79a8ff;">"Hi from the future! n is </span><span style="color: #00d3d0;">$n</span><span style="color: #79a8ff;">"</span>)
+      n
+    }
+  }
+
+  {
+    given ec<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">ExecutionContext</span> <span style="color: #b6a0ff;">=</span> scala.concurrent.<span style="color: #00bcff;">ExecutionContext</span>.global
+    <span style="color: #00bcff;">Await</span>.result(f1(<span style="color: #00bcff;">10</span>), <span style="color: #00bcff;">1</span> second)
+    <span style="color: #a8a8a8;">// </span><span style="color: #a8a8a8;">Hi from the future! n is 13</span>
+  }
+
+}
+</pre>
+</div>
+
+<p>
+Context functions reduce boilerplate when dealing with implicit parameters in deeply nested code. We can apply this technique to our eval function so that the symbol table itself is the implicit piece of context.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scala"><span style="color: #b6a0ff;">type</span> <span style="color: #00bcff;">WithEnv</span> <span style="color: #b6a0ff;">=</span> <span style="color: #00bcff;">Env</span> ?=&gt; <span style="color: #00bcff;">Int</span>
+
+<span style="color: #b6a0ff;">def</span> <span style="color: #feacd0;">eval</span>(exp<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">Exp</span>)<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">WithEnv</span> <span style="color: #b6a0ff;">=</span>
+  exp <span style="color: #b6a0ff;">match</span> {
+    <span style="color: #b6a0ff;">case</span> <span style="color: #6ae4b9;">Var</span>(<span style="color: #00d3d0;">id</span>) <span style="color: #b6a0ff;">=&gt;</span> handleVar(id)
+    <span style="color: #b6a0ff;">case</span> <span style="color: #6ae4b9;">Val</span>(<span style="color: #00d3d0;">value</span>) <span style="color: #b6a0ff;">=&gt;</span> value
+    <span style="color: #b6a0ff;">case</span> <span style="color: #6ae4b9;">Add</span>(<span style="color: #00d3d0;">l</span>,<span style="color: #00d3d0;">r</span>) <span style="color: #b6a0ff;">=&gt;</span> handleAdd(l,r)
+  }
+
+<span style="color: #b6a0ff;">def</span> <span style="color: #feacd0;">handleAdd</span>(l<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">Exp</span>, r<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">Exp</span>)<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">WithEnv</span> <span style="color: #b6a0ff;">=</span> eval(l) + eval(r)
+
+<span style="color: #b6a0ff;">def</span> <span style="color: #feacd0;">handleVar</span>(s<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">String</span>)<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">WithEnv</span> <span style="color: #b6a0ff;">=</span>
+  <span style="color: #b6a0ff;">val</span> <span style="color: #00d3d0;">env</span> <span style="color: #b6a0ff;">=</span> summon[<span style="color: #00bcff;">Env</span>]
+  env.getOrElse(s, <span style="color: #00bcff;">0</span>)
+</pre>
+</div>
+
+<p>
+You can take a look at the final Scala 3 version of the code here.
+</p>
+
+<p>
+<a href="https://github.com/justinhj/evalexample/blob/master/src/main/scala/Scala3Eval.scala">https://github.com/justinhj/evalexample/blob/master/src/main/scala/Scala3Eval.scala</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-org7baa236" class="outline-2">
+<h2 id="org7baa236">Final notes</h2>
+<div class="outline-text-2" id="text-org7baa236">
+<p>
+Of all the new features in Scala 3, I found Context Functions of most interest because of Martin Odersky's blog from 2016 <a href="https://www.scala-lang.org/blog/2016/12/07/implicit-function-types.html">https://www.scala-lang.org/blog/2016/12/07/implicit-function-types.html</a> where this intriguing quote appears near the end. (Context functions were initially known as implicit functions).
+</p>
+
+<blockquote>
+<p>
+There are many interesting connections with category theory to explore here. On the one hand, implicit functions are used for tasks that are sometimes covered with monads such as the reader monad. There’s an argument to be made that implicits have better composability than monads and why that is.
+</p>
+
+<p>
+On the other hand, it turns out that implicit functions can also be given a co-monadic interpretation, and the interplay between monads and comonads is very interesting in its own right.
+</p>
+
+<p>
+But these discussions will have to wait for another time, as this blog post is already too long.
+</p>
+</blockquote>
+
+<p>
+Somewhat of a Fermat's last theorem moment there, and I am also interested in how we can represent concepts, that are currently implemented in libraries which model category theory, using vanilla Scala 3 or alternative representations.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga7482f9" class="outline-2">
+<h2 id="orga7482f9">References</h2>
+<div class="outline-text-2" id="text-orga7482f9">
+<p>
+<a href="https://en.wikiquote.org/wiki/Pierre_de_Fermat">https://en.wikiquote.org/wiki/Pierre_de_Fermat</a>
+</p>
+
+<p>
+<a href="https://dotty.epfl.ch/docs/reference/enums/enums.html">https://dotty.epfl.ch/docs/reference/enums/enums.html</a>
+<a href="https://dotty.epfl.ch/docs/reference/enums/adts.html">https://dotty.epfl.ch/docs/reference/enums/adts.html</a>
+</p>
+
+<p>
+<a href="http://dotty.epfl.ch/docs/reference/other-new-features/indentation.html">http://dotty.epfl.ch/docs/reference/other-new-features/indentation.html</a>
+</p>
+
+<p>
+<a href="https://dotty.epfl.ch/docs/reference/contextual/givens.html">https://dotty.epfl.ch/docs/reference/contextual/givens.html</a> <a href="https://dotty.epfl.ch/docs/reference/contextual/using-clauses.html">https://dotty.epfl.ch/docs/reference/contextual/using-clauses.html</a>
+</p>
+
+<p>
+<a href="https://dotty.epfl.ch/docs/reference/contextual/context-functions.html">https://dotty.epfl.ch/docs/reference/contextual/context-functions.html</a>
+</p>
+
+<p>
+Foundations and Applications of Implicit Function Types
+<a href="https://infoscience.epfl.ch/record/229878/files/simplicitly_1.pdf">https://infoscience.epfl.ch/record/229878/files/simplicitly_1.pdf</a>
+</p>
+
+<p>
+<a href="http://recurse.se/2019/09/implicit-functions-in-scala-3/">http://recurse.se/2019/09/implicit-functions-in-scala-3/</a>
+</p>
+
+<p>
+&copy; 2020 Justin Heyes-Jones. All Rights Reserved.
+</p>
+</div>
+</div>
+
+  </div>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-6582321-6', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+</article>
+
+
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

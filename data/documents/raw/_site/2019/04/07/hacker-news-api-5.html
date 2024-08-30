@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  <title>Hacker News API Part 5</title>
+  <meta name="description" content="Updated June 29th 2019 to work with latest ZIO version (1.0.0-RC8-12)">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://localhost:4003/2019/04/07/hacker-news-api-5.html">
+  <link rel="alternate" type="application/rss+xml" title="Functional[Justin]" href="http://localhost:4003/feed.xml">
+</head>
+
+
+  
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-YDJ0HSM9M6"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-YDJ0HSM9M6');
+  </script>
+
+  <body>
+
+    <header class="site-header">
+  
+    <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-3">
+	<h5><a class="site-title" href="/">Functional[Justin]</a></h5>
+      </div>
+    </div>
+
+    <div class="footer-col-wrapper">
+      
+      <div class="footer-col footer-col-1">
+        <p>
+          <img class="circle" width="110px" src="/images/justinnew.png"/></p>
+
+      </div>
+      
+      <div class="footer-col footer-col-2">
+        <p>Justin is a British/Canadian software engineer at Treasure Data, functional programming, polyglot, Neovim and Emacs. </p>
+      </div>
+      
+      <div class="footer-col footer-col-3">
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/justinhj"><span class="icon icon--github"><svg viewBox="0 0 16 16"><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/></svg>
+</span><span class="username">justinhj</span></a>
+
+          </li>
+          
+	  
+	  <li>
+	    <a href="mailto:justinhj+blog@gmail.com">
+	      <span class="icon">
+		<img src="/images/email.png"/>
+	      </span>
+	      <span class="username">
+		justinhj@gmail.com
+	      </span>
+	    </a>
+	  </li>
+
+          <li>
+            <a href="https://gitter.im/justinhj">
+            <span class="icon">
+              <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 98.7 16.3" data-v-44ebcb1a=""><g><path d="M20.9,0.3h2.6v15.8h-2.6V0.3z"></path> <path d="M34.8,2.9h-4V0.3h11.8v2.6h-5.2v13.2h-2.6V2.9z"></path> <path d="M51.9,2.9h-4V0.3h11.8v2.6h-5.2v13.2h-2.6V2.9z"></path> <path d="M66.4,0.3h11.8v2.6H69v3.9h7.9v2.6H69v4h9.2v2.6H66.4V0.3z"></path> <path d="M98.7,16.1l-4.2-5.9c1.7-0.9,2.8-2.5,2.8-4.6c0-3.1-2.5-5.3-5.7-5.3l-6.2,0v15.8h2.6l0-5.3
+    c0,0,3.6,0,3.6,0l3.8,5.3H98.7z M88.1,8.2l0-5.3l3.5,0c1.7,0,3,1,3,2.6c0,1.7-1.4,2.6-3,2.6L88.1,8.2z"></path> <path d="M7.9,7.1v2.6l3.9,0c0,0,0,1.4,0,2.3c-0.1,0.2-0.4,1.8-3.8,1.8c-0.2,0-0.3,0-0.5,0
+    c-0.1,0-0.2,0-0.2,0c-0.1,0-0.2,0-0.2,0c-0.1,0-0.2-0.1-0.3-0.1c-0.1,0-0.1,0-0.2-0.1c0,0-0.1,0-0.1,0c-2.1-0.7-3.5-2.8-3.5-5.3
+    l0,0v0v0c0-0.3,0-0.5,0.1-0.8C3.3,4.7,5.4,2.5,8,2.5c0.9,0,2.5,0.3,3.6,1.5l1.5-2.2c0,0-1.3-1.9-5-1.9C3.7,0,0.4,3.3,0,7.3
+    c0,0.3,0,0.6,0,0.8l0,0l0,0c0,4.3,3.2,7.9,7.7,8.1c0.2,0,0.3,0,0.5,0c0,0,0.1,0,0.1,0c0.3,0,0.5,0,0.7,0c0.1,0,0.2,0,0.3,0
+    c0.2,0,0.3,0,0.5-0.1c2.7-0.1,4.7-2.3,4.7-3.4c0-5,0-5.7,0-5.7H7.9z"></path></g></svg>
+            </span>
+            <span class="username">
+              justinhj
+            </span>
+</a>
+          </li>
+	  <li>
+	    <a href="https://www.linkedin.com/in/justinheyesjones">
+	      <span class="icon">
+		<img src="/images/linkedin.png"/>
+	      </span>
+	      <span class="username">
+		LinkedIn
+	      </span>
+	    </a>
+	  </li>
+
+	  
+          <li>
+            <a href="https://twitter.com/justinhj"><span class="icon icon--twitter"><svg viewBox="0 0 16 16"><path fill="#828282" d="M15.969,3.058c-0.586,0.26-1.217,0.436-1.878,0.515c0.675-0.405,1.194-1.045,1.438-1.809c-0.632,0.375-1.332,0.647-2.076,0.793c-0.596-0.636-1.446-1.033-2.387-1.033c-1.806,0-3.27,1.464-3.27,3.27 c0,0.256,0.029,0.506,0.085,0.745C5.163,5.404,2.753,4.102,1.14,2.124C0.859,2.607,0.698,3.168,0.698,3.767 c0,1.134,0.577,2.135,1.455,2.722C1.616,6.472,1.112,6.325,0.671,6.08c0,0.014,0,0.027,0,0.041c0,1.584,1.127,2.906,2.623,3.206 C3.02,9.402,2.731,9.442,2.433,9.442c-0.211,0-0.416-0.021-0.615-0.059c0.416,1.299,1.624,2.245,3.055,2.271 c-1.119,0.877-2.529,1.4-4.061,1.4c-0.264,0-0.524-0.015-0.78-0.046c1.447,0.928,3.166,1.469,5.013,1.469 c6.015,0,9.304-4.983,9.304-9.304c0-0.142-0.003-0.283-0.009-0.423C14.976,4.29,15.531,3.714,15.969,3.058z"/></svg>
+</span><span class="username">justinhj</span></a>
+
+          </li>
+          
+
+	  
+        </ul>
+      </div>
+      
+    </div>
+
+    <div class="my-links">
+      <span class="page-link">
+      	<a href="/index.html">Posts by Date</a>
+       </span>
+
+      <span class="page-link">
+      	<a href="/topposts.html">Popular Posts</a>
+      </span>
+
+      <span class="page-link">
+      	<a href="https://www.youtube.com/c/FunctionalJustin">YouTube channel</a>
+       </span>
+
+      <span class="page-link">
+      	<a href="/talks.html">Speaking Events</a>
+       </span>
+
+      <span class="page-link">
+      	<a href="/privacy.html">Privacy</a>
+      </span>
+
+      </div>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        
+
+  
+
+  <!-- Iterate over the tags in this post -->
+  
+
+
+
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">Hacker News API Part 5</h1>
+    <p class="post-meta"><time datetime="2019-04-07T00:00:00-07:00" itemprop="datePublished">Apr 7, 2019</time></p>
+    <div class="post-meta">
+      
+        
+        
+        
+        More posts about
+    
+      <i class="fa fa-tags"></i>
+    
+  
+        <a href="/tag/scala/">
+        Scala</a>
+        
+          ,
+        
+      
+        <a href="/tag/functional-programming/">
+        Functional Programming</a>
+        
+          ,
+        
+      
+        <a href="/tag/zio/">
+        Zio</a>
+        
+          ,
+        
+      
+        <a href="/tag/hacker-news-api/">
+        Hacker News Api</a>
+        
+      
+    </div>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p>Updated June 29th 2019 to work with latest ZIO version (1.0.0-RC8-12)</p>
+
+<p>This post has accompanying source code on Github:</p>
+
+<ul>
+  <li><a href="https://github.com/justinhj/ziohnapi/tree/blog-2019-04-07-b">https://github.com/justinhj/ziohnapi/</a></li>
+</ul>
+
+<p>Hacker News is a news aggregation site which provides a simple API over http, for which the documentation can be found <a href="https://github.com/HackerNews/API">here</a>. Over several blog posts I have been writing programs that interact with the API as a way of exploring new techniques in Scala pure functional programming.</p>
+
+<p>This post is the fifth in a series. Here’s what came before:</p>
+
+<ol>
+  <li>Using Future[Either, E] with a http library and uPickle <a href="/2017/07/26/hacker-news-api-1.html">Hacker News API part 1</a></li>
+  <li>Using the Fetch library from 47 degrees <a href="/2017/07/30/hacker-news-api-2.html">Hacker News API part 2</a></li>
+  <li>Added a web front end using U-Dash, converted to ScalaJS and visualization of the Fetch operations with RefTree <a href="/2017/10/11/hacker-news-api-3.html">Hacker News API part 3</a></li>
+  <li>Get rid of Future and structure the program better using Monix’s effect type, Task. <a href="/2018/05/05/hacker-news-api-4.html">Hacker News API part 4</a></li>
+</ol>
+
+<p>A few months ago I attempted to update the code using two other techniques. The first was tagless final style (see <a href="https://softwaremill.com/free-tagless-compared-how-not-to-commit-to-monad-too-early/">https://softwaremill.com/free-tagless-compared-how-not-to-commit-to-monad-too-early/</a>) and the second was using a monad transformer library approach <a href="https://typelevel.org/cats-mtl/">https://typelevel.org/cats-mtl/</a></p>
+
+<p>What these techniques have in common is they allow us to defer the specific Monad type used in our code until later, allowing more flexibility and the ability to, for example, replace an asynchronous Task effect with a simpler Monad such as Id. This would enable us to write test suites that run faster. In addition it allows to swap out implementations of things like logging. Something like dependency injection at the higher kinded type level.</p>
+
+<p>While I was able to get my Hacker News API working with both these techniques, I never really got the code to a state where I wanted to share it with the world, or would be prepared to push it onto a team as an example of good style, so having seen this John de Goes talk <a href="https://skillsmatter.com/skillscasts/13247-scala-matters">The Death Of Final Tagless </a> and his follow up <a href="http://degoes.net/articles/zio-environment">Beautiful, Simple, Testable Functional Effects for Scala</a>, I decided it was time to start investigating ZIO.</p>
+
+<p>Like Monix, ZIO is a library that provides a full suite of tools for writing asynchronous and concurrent programs. You can see the full documentation here: <a href="https://scalaz.github.io/scalaz-zio/">Zio documentation</a></p>
+
+<p>The example code consists of three example programs. The first is based on my previous posts and simply retrieves and displays the current stories a page at a time.</p>
+
+<h2 id="showing-front-page-stories">Showing front page stories</h2>
+
+<p><a href="https://github.com/justinhj/ziohnapi/blob/blog-2019-04-07-b/src/main/scala/examples/ShowStories.scala">ShowStories.scala</a> is one of the examples include that simply gets the top stories (a list of story IDs ranked by their position on the Hacker News page) and then displays them in the console…</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="k">val</span> <span class="nv">runtime</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">LiveRuntime</span> <span class="o">{}</span>
+
+    <span class="k">val</span> <span class="nv">program</span> <span class="k">=</span> <span class="o">(</span><span class="nf">for</span> <span class="o">(</span>
+      <span class="n">s</span> <span class="k">&lt;-</span> <span class="nv">httpclient</span><span class="o">.</span><span class="py">get</span><span class="o">(</span><span class="n">getTopItemsURL</span><span class="o">);</span>
+      <span class="n">items</span> <span class="k">&lt;-</span> <span class="nf">parseTopItemsResponse</span><span class="o">(</span><span class="n">s</span><span class="o">);</span>
+      <span class="k">_</span> <span class="k">&lt;-</span> <span class="nf">showPagesLoop</span><span class="o">(</span><span class="n">items</span><span class="o">)</span>
+    <span class="o">)</span> <span class="nf">yield</span> <span class="o">()).</span><span class="py">foldM</span><span class="o">(</span>
+      <span class="n">err</span> <span class="k">=&gt;</span>
+        <span class="nf">putStrLn</span><span class="o">(</span><span class="n">s</span><span class="s">"Program threw exception. ${err.getMessage}"</span><span class="o">),</span>
+      <span class="n">succ</span> <span class="k">=&gt;</span> <span class="nv">ZIO</span><span class="o">.</span><span class="py">succeed</span><span class="o">(())</span>
+    <span class="o">)</span>
+
+    <span class="nv">runtime</span><span class="o">.</span><span class="py">unsafeRunSync</span><span class="o">(</span><span class="n">program</span><span class="o">)</span>
+</code></pre></div></div>
+
+<p>The showPagesLoop asks the user for a page number and continues looping until the user enters something that is not a number:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">def</span> <span class="nf">showPagesLoop</span><span class="o">(</span><span class="n">topItems</span><span class="k">:</span> <span class="kt">HNItemIDList</span><span class="o">)</span> <span class="k">:</span> <span class="kt">ZIO</span><span class="o">[</span><span class="kt">Env</span>, <span class="kt">Throwable</span>, <span class="kt">Unit</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span>
+
+    <span class="k">val</span> <span class="nv">itemsPerPage</span> <span class="k">=</span> <span class="mi">5</span>
+
+    <span class="nv">getUserPage</span><span class="o">.</span><span class="py">flatMap</span> <span class="o">{</span>
+      <span class="k">case</span> <span class="nc">Some</span><span class="o">(</span><span class="n">pageNumber</span><span class="o">)</span> <span class="k">=&gt;</span>
+        <span class="nf">for</span><span class="o">(</span>
+          <span class="k">_</span> <span class="k">&lt;-</span> <span class="nf">putStrLn</span><span class="o">(</span><span class="n">s</span><span class="s">"Page $pageNumber"</span><span class="o">);</span>
+          <span class="n">items</span> <span class="k">&lt;-</span> <span class="nf">fetchPage</span><span class="o">(</span><span class="n">pageNumber</span><span class="o">,</span> <span class="n">itemsPerPage</span><span class="o">,</span> <span class="n">topItems</span><span class="o">);</span>
+          <span class="k">_</span> <span class="k">&lt;-</span> <span class="nf">printPageItems</span><span class="o">(</span><span class="n">pageNumber</span><span class="o">,</span> <span class="n">itemsPerPage</span><span class="o">,</span> <span class="n">items</span><span class="o">);</span>
+          <span class="k">_</span> <span class="k">&lt;-</span> <span class="nf">showPagesLoop</span><span class="o">(</span><span class="n">topItems</span><span class="o">)</span>
+        <span class="o">)</span> <span class="nf">yield</span> <span class="o">()</span>
+      <span class="k">case</span> <span class="nc">None</span> <span class="k">=&gt;</span>
+        <span class="nf">putStrLn</span><span class="o">(</span><span class="s">"Have a nice day!"</span><span class="o">)</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+</code></pre></div></div>
+
+<h2 id="modules-and-the-environment">Modules and the environment</h2>
+
+<p>The programs are built from modules that make up the R part of ZIO[R,E,A]. I’m using the built in ones Blocking and Console, along with my own HttpClient that takes of retrieving data from a url as a string.</p>
+
+<p>An Environment for the runtime is an aggregation of the modules that make up your whole program:</p>
+
+<p><code class="language-plaintext highlighter-rouge">type Environment = Clock with Console with System with Random with Blocking with HttpClient</code></p>
+
+<p>Blocking is module that allows blocking operations to use a special threadpool, so that blocking calls don’t deplete threads from your main thread pool. Effects can be made to run on the blocking pool just by wrapping them as follows:</p>
+
+<p><a href="https://github.com/justinhj/ziohnapi/blob/blog-2019-04-07-b/src/main/scala/org/justinhj/httpclient/HttpClient.scala">HttpClient.scala</a></p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="nf">blocking</span><span class="o">(</span><span class="nv">ZIO</span><span class="o">.</span><span class="py">effect</span><span class="o">(</span><span class="nf">requestSync</span><span class="o">(</span><span class="n">url</span><span class="o">)))</span>
+</code></pre></div></div>
+
+<h2 id="testing">Testing</h2>
+
+<p>The nice thing about HttpClient being a module is that I can test my code without a web connection, or without hitting the real Hacker News by swapping the real implementation with a test one. You can see that in action in the test suite:</p>
+
+<p><a href="https://github.com/justinhj/ziohnapi/blob/blog-2019-04-07-b/src/test/scala/org/justinhj/HNApiTest.scala">HNApiTest.scala</a> - sample test suite</p>
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="c1">// The test http runtime</span>
+  <span class="k">trait</span> <span class="nc">HttpClientTest</span> <span class="k">extends</span> <span class="nc">HttpClient</span> <span class="o">{</span>
+
+    <span class="k">val</span> <span class="nv">sampleTopStories</span> <span class="k">=</span> <span class="nc">Test</span> <span class="n">data</span> <span class="n">omitted</span>
+    <span class="k">val</span> <span class="nv">sampleItem</span> <span class="k">=</span> <span class="nc">Test</span> <span class="n">data</span> <span class="n">omitted</span>
+
+    <span class="k">val</span> <span class="nv">httpClient</span><span class="k">:</span> <span class="kt">Service</span><span class="o">[</span><span class="kt">Any</span> <span class="kt">with</span> <span class="kt">HttpClient</span> <span class="kt">with</span> <span class="kt">Blocking</span><span class="o">]</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">Service</span><span class="o">[</span><span class="kt">Any</span> <span class="kt">with</span> <span class="kt">HttpClient</span> <span class="kt">with</span> <span class="kt">Blocking</span><span class="o">]</span> <span class="o">{</span>
+
+      <span class="k">def</span> <span class="nf">requestSync</span><span class="o">(</span><span class="n">url</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span> <span class="k">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="o">{</span>
+        <span class="nf">if</span><span class="o">(</span><span class="n">url</span> <span class="o">==</span> <span class="nv">HNApi</span><span class="o">.</span><span class="py">getTopItemsURL</span><span class="o">)</span> <span class="n">sampleTopStories</span>
+        <span class="k">else</span> <span class="nf">if</span><span class="o">(</span><span class="n">url</span> <span class="o">==</span> <span class="nv">HNApi</span><span class="o">.</span><span class="py">getItemURL</span><span class="o">(</span><span class="mi">11498534</span><span class="o">))</span> <span class="n">sampleItem</span>
+        <span class="k">else</span> <span class="k">throw</span> <span class="k">new</span> <span class="nc">Exception</span><span class="o">(</span><span class="n">s</span><span class="s">"$url not found in http mock client"</span><span class="o">)</span>
+      <span class="o">}</span>
+
+      <span class="k">final</span> <span class="k">def</span> <span class="nf">get</span><span class="o">(</span><span class="n">url</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span> <span class="k">:</span> <span class="kt">Task</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span>
+        <span class="nv">ZIO</span><span class="o">.</span><span class="py">effect</span><span class="o">(</span><span class="nf">requestSync</span><span class="o">(</span><span class="n">url</span><span class="o">))</span>
+      <span class="o">}</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+
+</code></pre></div></div>
+
+<p>This concept of swapping out modules can be useful for testing different databases, different JSON parsers and so on.</p>
+
+<h2 id="fibers">Fibers</h2>
+
+<p>ZIO allows a large number of concurrent operations by using an implementation of green threads called Fibers. The API is straightforward. For example in this function that retrieves an item and them recursively retrieves its ‘kids’ (for example kids of a comment are nested comments, kids of a news story are the top level comments on that story) and we use the function <code class="language-plaintext highlighter-rouge">foreachParN(8)</code> to split the jobs across up to 8 individual fibers. This gives you control over the amount of active fibers in each part of your application.</p>
+
+<p><a href="https://github.com/justinhj/ziohnapi/blob/2a7e5d634813afd43f6c9e306807c69186138c28/src/main/scala/org/justinhj/hnapi/HNApi.scala#L126">HNApi.scala</a></p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">def</span> <span class="nf">getItemAndKidsList</span><span class="o">(</span><span class="n">parentId</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span> <span class="k">:</span> <span class="kt">ZIO</span><span class="o">[</span><span class="kt">Env</span>, <span class="kt">Throwable</span>, <span class="kt">List</span><span class="o">[</span><span class="kt">HNItem</span><span class="o">]]</span> <span class="k">=</span>
+    <span class="nf">for</span><span class="o">(</span>
+      <span class="n">itemResponse</span> <span class="k">&lt;-</span> <span class="nv">httpclient</span><span class="o">.</span><span class="py">get</span><span class="o">(</span><span class="nf">getItemURL</span><span class="o">(</span><span class="n">parentId</span><span class="o">));</span>
+      <span class="n">item</span> <span class="k">&lt;-</span> <span class="nf">parseItemResponse</span><span class="o">(</span><span class="n">itemResponse</span><span class="o">);</span>
+      <span class="n">kids</span> <span class="k">&lt;-</span> <span class="nv">ZIO</span><span class="o">.</span><span class="py">foreachParN</span><span class="o">(</span><span class="mi">8</span><span class="o">)(</span><span class="nv">item</span><span class="o">.</span><span class="py">kids</span><span class="o">){</span><span class="n">id</span> <span class="k">=&gt;</span> <span class="nf">getItemAndKidsList</span><span class="o">(</span><span class="n">id</span><span class="o">)}</span>
+    <span class="o">)</span> <span class="k">yield</span> <span class="nv">kids</span><span class="o">.</span><span class="py">flatten</span> <span class="o">:+</span> <span class="n">item</span>
+</code></pre></div></div>
+
+<p>This function is used in the code below to show all the comments for a given news story (by its ID):</p>
+
+<p><a href="https://github.com/justinhj/ziohnapi/blob/blog-2019-04-07-b/src/main/scala/examples/ShowStoryComments.scala">ShowStoryComments.scala</a></p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="k">val</span> <span class="nv">program</span> <span class="k">=</span> <span class="o">(</span><span class="nf">for</span> <span class="o">(</span>
+      <span class="n">itemId</span> <span class="k">&lt;-</span> <span class="n">getItemId</span><span class="o">;</span>
+      <span class="n">itemsAndKids</span> <span class="k">&lt;-</span> <span class="nf">getItemAndKids</span><span class="o">(</span><span class="n">itemId</span><span class="o">);</span>
+      <span class="k">_</span> <span class="k">&lt;-</span> <span class="nf">showComments</span><span class="o">(</span><span class="n">itemId</span><span class="o">,</span> <span class="n">itemsAndKids</span><span class="o">)</span>
+    <span class="o">)</span> <span class="nf">yield</span> <span class="o">()).</span><span class="py">foldM</span><span class="o">(</span>
+      <span class="n">err</span> <span class="k">=&gt;</span>
+        <span class="nf">putStrLn</span><span class="o">(</span><span class="n">s</span><span class="s">"Program threw exception. $err"</span><span class="o">),</span>
+      <span class="n">succ</span> <span class="k">=&gt;</span> <span class="nv">ZIO</span><span class="o">.</span><span class="py">succeed</span><span class="o">(())</span>
+	  <span class="o">)</span>
+</code></pre></div></div>
+
+<h2 id="scheduling">Scheduling</h2>
+
+<p>Another feature of ZIO is the scheduler data type. Again, the API is composed of simple operations that you can compose together to make more complex overall behaviours. In this simple example we grab the latest story or comment submitted to Hacker News every 10 seconds until the user quits.</p>
+
+<p><a href="https://github.com/justinhj/ziohnapi/blob/blog-2019-04-07-b/src/main/scala/examples/LastItem.scala">LastItem.scala</a></p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="k">val</span> <span class="nv">showLastItem</span> <span class="k">=</span> <span class="nf">for</span> <span class="o">(</span>
+      <span class="n">maxItemResponse</span> <span class="k">&lt;-</span> <span class="nv">httpclient</span><span class="o">.</span><span class="py">get</span><span class="o">(</span><span class="n">getMaxItemURL</span><span class="o">);</span>
+      <span class="n">maxItem</span> <span class="k">&lt;-</span> <span class="nf">parseMaxItemResponse</span><span class="o">(</span><span class="n">maxItemResponse</span><span class="o">);</span>
+      <span class="n">itemResponse</span> <span class="k">&lt;-</span> <span class="nv">httpclient</span><span class="o">.</span><span class="py">get</span><span class="o">(</span><span class="nf">getItemURL</span><span class="o">(</span><span class="n">maxItem</span><span class="o">));</span>
+      <span class="n">item</span> <span class="k">&lt;-</span> <span class="nf">parseItemResponse</span><span class="o">(</span><span class="n">itemResponse</span><span class="o">);</span>
+      <span class="k">_</span> <span class="k">&lt;-</span> <span class="nf">showComment</span><span class="o">(</span><span class="n">item</span><span class="o">)</span>
+    <span class="o">)</span> <span class="nf">yield</span> <span class="o">()</span>
+
+    <span class="k">val</span> <span class="nv">program</span> <span class="k">=</span> <span class="nv">showLastItem</span><span class="o">.</span><span class="py">repeat</span><span class="o">(</span><span class="nv">Schedule</span><span class="o">.</span><span class="py">spaced</span><span class="o">(</span><span class="mf">10.</span><span class="n">seconds</span><span class="o">))</span>
+
+    <span class="nv">runtime</span><span class="o">.</span><span class="py">unsafeRunSync</span><span class="o">(</span><span class="n">program</span><span class="o">)</span>
+</code></pre></div></div>
+
+<h2 id="final-words">Final words</h2>
+
+<p>ZIO is easy to use and very powerful, a great combination. Even though the applications are built using solid pure fp concepts such as the Reader and State monads, these are beneath the surface of the API, and the user can concentrate on building the application.</p>
+
+<p>I am just getting started with ZIO and any feedback on my example program and post, good or bad, is welcome. You can contact me via Twitter or Email at the top of the page, or open a Github issue.</p>
+
+<p>Thanks for getting to the end!</p>
+
+<h2 id="post-script">Post script</h2>
+
+<p>Thanks for all the great feedback on this article! I have now changed all occurences of the word Fibre with Fiber. I accidentally used the British spelling of the word which is inconsistent with the spelling in Zio itself.</p>
+
+<p>Copyright (C) 2019 Justin-Heyes-Jones - All Rights Reserved</p>
+
+  </div>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-6582321-6', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+</article>
+
+
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

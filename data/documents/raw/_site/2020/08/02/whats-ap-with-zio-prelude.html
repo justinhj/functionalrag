@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  <title>What's Ap with zio-prelude?</title>
+  <meta name="description" content="What's ZIO PreludeRecently, ZIO creators, John De Goes and Adam Fraser, presented theirlatest functional programming library to the world. ZIO Prelude,hereaf...">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://localhost:4003/2020/08/02/whats-ap-with-zio-prelude.html">
+  <link rel="alternate" type="application/rss+xml" title="Functional[Justin]" href="http://localhost:4003/feed.xml">
+</head>
+
+
+  
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-YDJ0HSM9M6"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-YDJ0HSM9M6');
+  </script>
+
+  <body>
+
+    <header class="site-header">
+  
+    <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-3">
+	<h5><a class="site-title" href="/">Functional[Justin]</a></h5>
+      </div>
+    </div>
+
+    <div class="footer-col-wrapper">
+      
+      <div class="footer-col footer-col-1">
+        <p>
+          <img class="circle" width="110px" src="/images/justinnew.png"/></p>
+
+      </div>
+      
+      <div class="footer-col footer-col-2">
+        <p>Justin is a British/Canadian software engineer at Treasure Data, functional programming, polyglot, Neovim and Emacs. </p>
+      </div>
+      
+      <div class="footer-col footer-col-3">
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/justinhj"><span class="icon icon--github"><svg viewBox="0 0 16 16"><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/></svg>
+</span><span class="username">justinhj</span></a>
+
+          </li>
+          
+	  
+	  <li>
+	    <a href="mailto:justinhj+blog@gmail.com">
+	      <span class="icon">
+		<img src="/images/email.png"/>
+	      </span>
+	      <span class="username">
+		justinhj@gmail.com
+	      </span>
+	    </a>
+	  </li>
+
+          <li>
+            <a href="https://gitter.im/justinhj">
+            <span class="icon">
+              <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 98.7 16.3" data-v-44ebcb1a=""><g><path d="M20.9,0.3h2.6v15.8h-2.6V0.3z"></path> <path d="M34.8,2.9h-4V0.3h11.8v2.6h-5.2v13.2h-2.6V2.9z"></path> <path d="M51.9,2.9h-4V0.3h11.8v2.6h-5.2v13.2h-2.6V2.9z"></path> <path d="M66.4,0.3h11.8v2.6H69v3.9h7.9v2.6H69v4h9.2v2.6H66.4V0.3z"></path> <path d="M98.7,16.1l-4.2-5.9c1.7-0.9,2.8-2.5,2.8-4.6c0-3.1-2.5-5.3-5.7-5.3l-6.2,0v15.8h2.6l0-5.3
+    c0,0,3.6,0,3.6,0l3.8,5.3H98.7z M88.1,8.2l0-5.3l3.5,0c1.7,0,3,1,3,2.6c0,1.7-1.4,2.6-3,2.6L88.1,8.2z"></path> <path d="M7.9,7.1v2.6l3.9,0c0,0,0,1.4,0,2.3c-0.1,0.2-0.4,1.8-3.8,1.8c-0.2,0-0.3,0-0.5,0
+    c-0.1,0-0.2,0-0.2,0c-0.1,0-0.2,0-0.2,0c-0.1,0-0.2-0.1-0.3-0.1c-0.1,0-0.1,0-0.2-0.1c0,0-0.1,0-0.1,0c-2.1-0.7-3.5-2.8-3.5-5.3
+    l0,0v0v0c0-0.3,0-0.5,0.1-0.8C3.3,4.7,5.4,2.5,8,2.5c0.9,0,2.5,0.3,3.6,1.5l1.5-2.2c0,0-1.3-1.9-5-1.9C3.7,0,0.4,3.3,0,7.3
+    c0,0.3,0,0.6,0,0.8l0,0l0,0c0,4.3,3.2,7.9,7.7,8.1c0.2,0,0.3,0,0.5,0c0,0,0.1,0,0.1,0c0.3,0,0.5,0,0.7,0c0.1,0,0.2,0,0.3,0
+    c0.2,0,0.3,0,0.5-0.1c2.7-0.1,4.7-2.3,4.7-3.4c0-5,0-5.7,0-5.7H7.9z"></path></g></svg>
+            </span>
+            <span class="username">
+              justinhj
+            </span>
+</a>
+          </li>
+	  <li>
+	    <a href="https://www.linkedin.com/in/justinheyesjones">
+	      <span class="icon">
+		<img src="/images/linkedin.png"/>
+	      </span>
+	      <span class="username">
+		LinkedIn
+	      </span>
+	    </a>
+	  </li>
+
+	  
+          <li>
+            <a href="https://twitter.com/justinhj"><span class="icon icon--twitter"><svg viewBox="0 0 16 16"><path fill="#828282" d="M15.969,3.058c-0.586,0.26-1.217,0.436-1.878,0.515c0.675-0.405,1.194-1.045,1.438-1.809c-0.632,0.375-1.332,0.647-2.076,0.793c-0.596-0.636-1.446-1.033-2.387-1.033c-1.806,0-3.27,1.464-3.27,3.27 c0,0.256,0.029,0.506,0.085,0.745C5.163,5.404,2.753,4.102,1.14,2.124C0.859,2.607,0.698,3.168,0.698,3.767 c0,1.134,0.577,2.135,1.455,2.722C1.616,6.472,1.112,6.325,0.671,6.08c0,0.014,0,0.027,0,0.041c0,1.584,1.127,2.906,2.623,3.206 C3.02,9.402,2.731,9.442,2.433,9.442c-0.211,0-0.416-0.021-0.615-0.059c0.416,1.299,1.624,2.245,3.055,2.271 c-1.119,0.877-2.529,1.4-4.061,1.4c-0.264,0-0.524-0.015-0.78-0.046c1.447,0.928,3.166,1.469,5.013,1.469 c6.015,0,9.304-4.983,9.304-9.304c0-0.142-0.003-0.283-0.009-0.423C14.976,4.29,15.531,3.714,15.969,3.058z"/></svg>
+</span><span class="username">justinhj</span></a>
+
+          </li>
+          
+
+	  
+        </ul>
+      </div>
+      
+    </div>
+
+    <div class="my-links">
+      <span class="page-link">
+      	<a href="/index.html">Posts by Date</a>
+       </span>
+
+      <span class="page-link">
+      	<a href="/topposts.html">Popular Posts</a>
+      </span>
+
+      <span class="page-link">
+      	<a href="https://www.youtube.com/c/FunctionalJustin">YouTube channel</a>
+       </span>
+
+      <span class="page-link">
+      	<a href="/talks.html">Speaking Events</a>
+       </span>
+
+      <span class="page-link">
+      	<a href="/privacy.html">Privacy</a>
+      </span>
+
+      </div>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        
+
+  
+
+  <!-- Iterate over the tags in this post -->
+  
+
+
+
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">What's Ap with zio-prelude?</h1>
+    <p class="post-meta"><time datetime="2020-08-02T00:00:00-07:00" itemprop="datePublished">Aug 2, 2020</time></p>
+    <div class="post-meta">
+      
+        
+        
+        
+        
+        
+        
+        More posts about
+    
+      <i class="fa fa-tags"></i>
+    
+  
+        <a href="/tag/pure-functional-programming/">
+        Pure Functional Programming</a>
+        
+          ,
+        
+      
+        <a href="/tag/cats/">
+        Cats</a>
+        
+          ,
+        
+      
+        <a href="/tag/scala/">
+        Scala</a>
+        
+          ,
+        
+      
+        <a href="/tag/applicative/">
+        Applicative</a>
+        
+          ,
+        
+      
+        <a href="/tag/monads/">
+        Monads</a>
+        
+          ,
+        
+      
+        <a href="/tag/functors/">
+        Functors</a>
+        
+          ,
+        
+      
+        <a href="/tag/zio/">
+        Zio</a>
+        
+      
+    </div>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <link rel="stylesheet" type="text/css" href="../../../_orgcss/site.css" />
+<div id="outline-container-orga816b2d" class="outline-2">
+<h2 id="orga816b2d">What's ZIO Prelude</h2>
+<div class="outline-text-2" id="text-orga816b2d">
+<p>
+Recently, ZIO creators, John De Goes and Adam Fraser, presented their
+latest functional programming library to the world. ZIO Prelude,
+hereafter referred to as Prelude, is promised as a radical shift in
+the way functional programming is taught, implemented and used. The
+event was the online edition of the SF Scala meetup, and the talk is
+now available on YouTube <a href="https://youtu.be/OwmHgL9F_9Q">SF Scala: Reimagining Functional Type
+Classes</a>. You can also visit the source code on Github <a href="https://github.com/zio/zio-prelude">zio-prelude</a>.
+</p>
+
+<p>
+For those that don't know, Prelude was initially developed, I'm told, as part of
+John De Goes's "Spartan" training program, so I wasn't able to follow it since
+its inception. I've been looking forward to the release since I heard about it,
+especially since John has alluded to a new type class encoding for a few years,
+for example in this talk at flatMap Oslo 2018
+<a href="https://www.youtube.com/watch?v=sFGnFKMSmL0&amp;t=1462s">https://www.youtube.com/watch?v=sFGnFKMSmL0&amp;t=1462s</a>
+</p>
+
+<p>
+In this post I will give my first impressions, having watched the talk and spent
+a few hours playing around with the library. At this stage, the nascent library
+is still undergoing rapid changes, so some of what I write here will likely be
+outdated fairly soon. I'm also new to the library, so if I make any mistakes
+feel free to contact me and I will correct them.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgc98e2ee" class="outline-2">
+<h2 id="orgc98e2ee">What's ap with ZIO Prelude?</h2>
+<div class="outline-text-2" id="text-orgc98e2ee">
+<p>
+Prior to the talk John tweeted:
+</p>
+
+<blockquote>
+<p>
+For a decade, 'ap' from Applicative has infected Scala code:
+</p>
+
+<p>
+def ap[A, B](f: F[A =&gt; B], fa: F[A]): F[B]
+</p>
+
+<p>
+Cryptic &amp; confusing, did you know the raison d'être of 'ap' is Haskell's curried functions, not category theory?
+</p>
+
+<p>
+Learn how we can do better! - John De Goes
+</p>
+</blockquote>
+
+<p>
+This also piqued my curiosity as I have talked about Applicative publicly quite
+a bit this year including at online meetups and the Scala Love conference. I
+also wrote a lengthy blog post on Applicative Programming with Effects.
+</p>
+
+<a href="/2020/04/04/whats-ap.html">What's Ap?</a>
+
+<p>
+John has pointed out <a href="https://www.reddit.com/r/scala/comments/afor0h/scalaz_8_timeline/eeac71m/">before</a> that Ap is not a great ergonomic fit for Scala
+(currying is much more natural in Haskell). Ap is hard to teach because of this;
+a lot of Scala developers find currying tricky. It is, however, an important
+part of the language, and a useful tool for every Scala programmers toolbox.
+</p>
+
+<ul class="org-ul">
+<li><a href="https://docs.scala-lang.org/tour/multiple-parameter-lists.html">https://docs.scala-lang.org/tour/multiple-parameter-lists.html</a></li>
+<li><a href="https://alvinalexander.com/scala/fp-book/partially-applied-functions-currying-in-scala/">https://alvinalexander.com/scala/fp-book/partially-applied-functions-currying-in-scala/</a></li>
+</ul>
+
+<p>
+Later in the post, I will try to reimplement some of my sample code from the
+What's Ap post, and see how well Prelude replaces Applicative, both from the
+developer perspective and in terms of how easy each would be to teach.
+</p>
+
+<p>
+From this point of view I will be approaching Prelude in a way that it is not
+designed for; mapping the Haskell style class hierarchy to Prelude. We shouldn't
+judge it on that basis, but since John threw down the gauntlet I will accept the
+challenge to defend my friend the Applicative.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org834b5c7" class="outline-2">
+<h2 id="org834b5c7">Goals of Prelude</h2>
+<div class="outline-text-2" id="text-org834b5c7">
+<p>
+As you'll see in the <a href="https://www.slideshare.net/jdegoes/refactoring-functional-type-classes">slide deck</a>, the goals of prelude are to be the following:
+</p>
+
+<ul class="org-ul">
+<li>Radical</li>
+<li>Orthogonal</li>
+<li>Principled</li>
+<li>Scala-First</li>
+<li>Minimal</li>
+<li>Pragmatic</li>
+<li>Accessible</li>
+<li>Opinionated</li>
+</ul>
+
+<p>
+The goals I find most compelling here are accessible and orthogonal. As a
+functional programming advocate and educator, I am very interested in any steps
+towards greater accessibility. The orthogonal part is also key, as I believe
+that composability is one of the biggest wins of pure functional programs.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org04a3aca" class="outline-2">
+<h2 id="org04a3aca">Algebras, not Category Theory</h2>
+<div class="outline-text-2" id="text-org04a3aca">
+<p>
+With Cats, almost all of the concepts come from category theory. We have Monads,
+Functors, Monoids, Monoidal Functors and so on. The idea with prelude is that
+algebra is more familiar to us, as non-mathematician programmers than category
+theory. Algebras are also more composable, so the idea is to start with a small
+number of primitive things(?) and combining them into more powerful objects.
+</p>
+
+<p>
+The big question that prelude puts out there is this; is Category Theory an
+obstacle to adoption of pure functional programming, and would abstract algebra
+be a better way to both introduce newcomers, and provide a better solution
+overall to the problems and applications that Cats et al already address?
+</p>
+</div>
+</div>
+
+<div id="outline-container-org80929e9" class="outline-2">
+<h2 id="org80929e9">Functor and Monad</h2>
+<div class="outline-text-2" id="text-org80929e9">
+</div>
+<div id="outline-container-org8fdfc10" class="outline-3">
+<h3 id="org8fdfc10">Functors (Covariant)</h3>
+<div class="outline-text-3" id="text-org8fdfc10">
+<p>
+In my original post, I introduce Functor and Monad as the gateway to
+Applicative. Functor is a simple and beautiful thing, in that it allows us to
+combine pure functions with "effectful" computations, mapping an F[A] to an
+F[B]. In prelude Functor and Monad do not exist as first-class entities,
+although we can see them defined as type aliases. This seems to be more
+documentation than practical as the type aliases are not used anywhere in the
+code.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scala"><span style="color: #b6a0ff;">type</span> <span style="color: #00bcff;">Functor</span>[<span style="color: #00bcff;">F</span>[+<span style="color: #b6a0ff;">_</span>]] <span style="color: #b6a0ff;">=</span> <span style="color: #00bcff;">Covariant</span>[<span style="color: #00bcff;">F</span>]
+<span style="color: #b6a0ff;">type</span> <span style="color: #00bcff;">Monad</span>[<span style="color: #00bcff;">F</span>[+<span style="color: #b6a0ff;">_</span>]] <span style="color: #b6a0ff;">=</span> <span style="color: #00bcff;">Covariant</span>[<span style="color: #00bcff;">F</span>] <span style="color: #b6a0ff;">with</span> <span style="color: #6ae4b9;">IdentityFlatten</span>[<span style="color: #00bcff;">F</span>]
+</pre>
+</div>
+
+<p>
+In Cats the Functor type class is short for Covariant Functor. What does that
+mean? First of all one of the best discussions of covariance in Scala I know can
+be found here on the scala-lang.org site:
+</p>
+
+<p>
+<a href="https://docs.scala-lang.org/tour/variances.html">https://docs.scala-lang.org/tour/variances.html</a>
+</p>
+
+<p>
+In essence, a covariant type parameter, for example with List[+A], means that you
+if B is a subtype of A, then List[B] is a subtype of List[A].
+</p>
+
+<p>
+The Cats Functor is also covariant in that if you have a function that can map
+an A to a B, you can map a higher-kinded type F[A] to F[B] too using the
+Covariant Functor.
+</p>
+
+<p>
+In Cats a Functor is defined as a higher-kinded type with a map function. In
+Prelude a Functor is just something that implements the Covariant type and
+follows its laws.
+</p>
+
+<p>
+Functor has essentially changed names in Prelude, it is on the surface the same as
+the Cats Functor.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scala"><span style="color: #00bcff;">List</span>(<span style="color: #00bcff;">1</span>,<span style="color: #00bcff;">2</span>,<span style="color: #00bcff;">3</span>).map(a <span style="color: #b6a0ff;">=&gt;</span> a + <span style="color: #00bcff;">1</span>)
+<span style="color: #a8a8a8;">// </span><span style="color: #a8a8a8;">List[Int] = List(2, 3, 4)</span>
+<span style="color: #00bcff;">Option</span>(<span style="color: #00bcff;">1</span>).map(a <span style="color: #b6a0ff;">=&gt;</span> a + <span style="color: #00bcff;">1</span>)
+<span style="color: #a8a8a8;">// </span><span style="color: #a8a8a8;">Option[Int] = Some(2)</span>
+</pre>
+</div>
+
+<p>
+There is an excellent post about variance and functors on the Typelevel site:
+</p>
+
+<p>
+<a href="https://typelevel.org/blog/2016/02/04/variance-and-functors.html">https://typelevel.org/blog/2016/02/04/variance-and-functors.html</a>
+</p>
+
+<p>
+You can take a look at the implementation of Covariant here:
+</p>
+
+<p>
+<a href="https://github.com/zio/zio-prelude/blob/master/src/main/scala/zio/prelude/Covariant.scala">https://github.com/zio/zio-prelude/blob/master/src/main/scala/zio/prelude/Covariant.scala</a>
+</p>
+
+<p>
+It's nice that each abstraction, or algebra, has it's own file, and in that file
+you'll find the following.
+</p>
+
+<ol class="org-ol">
+<li>A trait defining the interface to the algebra. For example, Covariant defines
+map and a couple of other functions. In this respect it is similar to Cats.</li>
+<li>Laws. The companion object contains the laws to test the algebra directly.
+Each object has a <code>laws</code> member that can be checked with the package objects
+<code>checkAllLaws</code> method.</li>
+<li>Instances. Rather than have instances in a separate file or package, they are
+also embedded in the companion. It's nice to have them all easily listed in
+the same place. Most algebras have instances for some appropriate standard
+library types, as well as some "ZIO" types like <code>ZIO</code> itself and <code>Chunk</code> and
+new Prelude types like <code>ZPure</code> which we will get into in a later post.
+Another thing I like is the code documentation is laid out like this
+<code>`Covariant` instance for `Chunk`</code> so that if you want to find, say, all the
+instances for ZIO you can do do a global text search for <code>instance for `ZIO`</code>
+and you'll find them. This kind of thoughtful ergonomics is much appreciated.</li>
+<li>Finally, at the end of the object implememtation you will find some syntax.
+If you ever struggled with imports in Scalaz and Cats, you may appreciate
+this one file per algebra layout.</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org4ca1745" class="outline-3">
+<h3 id="org4ca1745">Monads</h3>
+<div class="outline-text-3" id="text-org4ca1745">
+<p>
+In Cats we extend Functor with Applicative and add the <code>flatMap</code> operation to get
+Monad. Applicative brings us both <code>ap</code> and <code>pure</code>. Leaving ap aside for the
+moment, pure is the important ability to lift a pure value into the context of
+some effect, represented as a higher-kinded type.
+</p>
+
+<p>
+Let's take a look at sequencing two Futures together using prelude. In
+order to do that with Cats we would use the Monad flatmap operation.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scala"><span style="color: #b6a0ff;">def</span> <span style="color: #feacd0;">getUser</span>(email<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">String</span>)<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">Future</span>[<span style="color: #00bcff;">User</span>] <span style="color: #b6a0ff;">=</span> ???
+
+<span style="color: #b6a0ff;">def</span> <span style="color: #feacd0;">getAccountStatus</span>(id<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">String</span>)<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">Future</span>[<span style="color: #00bcff;">AccountStatus</span>] <span style="color: #b6a0ff;">=</span> ???
+
+<span style="color: #b6a0ff;">val</span> <span style="color: #00d3d0;">accountStatus</span> <span style="color: #b6a0ff;">=</span> getUser(<span style="color: #79a8ff;">"bob@google.com"</span>)
+  .flatMap(user <span style="color: #b6a0ff;">=&gt;</span> getAccountStatus(user.accountId))
+</pre>
+</div>
+
+<p>
+In prelude you would do the same, since nothing overrides flatMap from ZIO or
+the standard library, you can simply call flatMap, but you wouldn't be
+exercising the new algebraic components that make up prelude, stay tuned.
+</p>
+
+<p>
+Remember above that Monad is defined as the composition of IdentityFlatten and
+Covariant. We already saw that Covariant is Functor and provides map (remember
+that all Monad's are functors).
+</p>
+
+<p>
+IdentityFlatten is the composition of prelude types Associative, Identity and
+Flatten. Flatten is easy it just gives us the ability to flatten an effect from
+an <code>F[F[A]]</code> to an <code>F[A]</code>. For example, the somewhat contrived code below
+executes a ZIO that is nested inside another, resulting in a <code>ZIO[ZIO[A]]</code>. We
+can use the ZIO Flatten instance to flatten and run the effects.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scala"><span style="color: #b6a0ff;">import</span> zio.<span style="color: #b6a0ff;">_</span>
+<span style="color: #b6a0ff;">val</span> <span style="color: #00d3d0;">runtime</span> <span style="color: #b6a0ff;">=</span> <span style="color: #00bcff;">Runtime</span>.default
+<span style="color: #b6a0ff;">val</span> <span style="color: #00d3d0;">effect</span> <span style="color: #b6a0ff;">=</span> <span style="color: #00bcff;">ZIO</span>{putStrLn(<span style="color: #79a8ff;">"Hello!"</span>); <span style="color: #00bcff;">ZIO</span>.succeed(<span style="color: #00bcff;">10</span>)}
+runtime.unsafeRun(effect.flatten)
+<span style="color: #a8a8a8;">// </span><span style="color: #a8a8a8;">Hello!</span>
+<span style="color: #a8a8a8;">// </span><span style="color: #a8a8a8;">Int = 10</span>
+</pre>
+</div>
+
+<p>
+Whilst most types, including ZIO effects, Future, Option and List all have
+flatMap, we <code>could</code> define it in terms of <code>Covariant</code> and <code>IdentityFlatten</code> as follows.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scala"><span style="color: #b6a0ff;">def</span> <span style="color: #feacd0;">flatMap</span>[<span style="color: #00bcff;">F</span>[+<span style="color: #b6a0ff;">_</span>]<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">Covariant</span> <span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">IdentityFlatten</span>, <span style="color: #00bcff;">A</span>, <span style="color: #00bcff;">B</span>](fa<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">F</span>[<span style="color: #00bcff;">A</span>])(fab<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">A</span> <span style="color: #b6a0ff;">=&gt;</span> <span style="color: #00bcff;">F</span>[<span style="color: #00bcff;">B</span>])<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">F</span>[<span style="color: #00bcff;">B</span>] <span style="color: #b6a0ff;">=</span> {
+  fa.map(a <span style="color: #b6a0ff;">=&gt;</span> fab(a)).flatten
+}
+</pre>
+</div>
+
+<p>
+Monad also traditionally defines <code>pure</code>, a way to lift pure values into an effect
+context. We can do that with Covariant's <code>map</code> and IdentityFlatten's <code>any</code>.
+<code>any</code> summons an effect out of thin air for us, and we can then use map to sneak
+our pure value into that effect. Whilst this seems a little tricky, it gives a
+bit more flexibility. As Adam Fraser puts it, this "also allows you to express
+constraints on the types of values that can be injected through implementing
+CovariantSubset instead of Covariant". Subsets were not featured in the
+talk and I'll talk about those more in a future post once my understanding is
+more solidified.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scala"><span style="color: #b6a0ff;">def</span> <span style="color: #feacd0;">pure</span>[<span style="color: #00bcff;">F</span>[+<span style="color: #b6a0ff;">_</span>] <span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">Covariant</span> <span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">IdentityFlatten</span>, <span style="color: #00bcff;">A</span>](a<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">A</span>)(<span style="color: #f78fe7;">implicit</span> i <span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">IdentityFlatten</span>[<span style="color: #00bcff;">F</span>])<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">F</span>[<span style="color: #00bcff;">A</span>] <span style="color: #b6a0ff;">=</span> {
+  i.any.map(<span style="color: #b6a0ff;">_</span> <span style="color: #b6a0ff;">=&gt;</span> a)
+}
+pure[<span style="color: #00bcff;">Option</span>,<span style="color: #00bcff;">Int</span>](<span style="color: #00bcff;">12</span>)
+<span style="color: #a8a8a8;">// </span><span style="color: #a8a8a8;">Option[Int] = Some(12)</span>
+pure[<span style="color: #00bcff;">List</span>,<span style="color: #00bcff;">String</span>](<span style="color: #79a8ff;">"Hello"</span>)
+<span style="color: #a8a8a8;">// </span><span style="color: #a8a8a8;">List[String] = List(Hello)</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org976046e" class="outline-2">
+<h2 id="org976046e">Applicatives in Prelude</h2>
+<div class="outline-text-2" id="text-org976046e">
+<p>
+In my original post we used the ap function to apply a function to an option
+using the ap function. Whilst the purpose of this was to go to explain currying
+so we can apply a function to multiple effects, as parameters, here let's just
+replicated it with prelude.
+</p>
+
+<p>
+In prelude the equivalent to Applicative is defined as follows.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scala"><span style="color: #b6a0ff;">type</span> <span style="color: #00bcff;">Applicative</span>[<span style="color: #00bcff;">F</span>[+<span style="color: #b6a0ff;">_</span>]] <span style="color: #b6a0ff;">=</span> <span style="color: #00bcff;">Covariant</span>[<span style="color: #00bcff;">F</span>] <span style="color: #b6a0ff;">with</span> <span style="color: #6ae4b9;">IdentityBoth</span>[<span style="color: #00bcff;">F</span>]
+</pre>
+</div>
+
+<p>
+Covariant should be familiar, it is Functor and gives us map. IdentityBoth is
+Identity with AssociativeBoth.
+</p>
+
+<p>
+Associative both is product from Cats. (product can be implemented with the ap
+function from Applicative)
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scala"><span style="color: #f78fe7;">override</span> <span style="color: #b6a0ff;">def</span> <span style="color: #feacd0;">product</span>[<span style="color: #00bcff;">A</span>, <span style="color: #00bcff;">B</span>](fa<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">F</span>[<span style="color: #00bcff;">A</span>], fb<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">F</span>[<span style="color: #00bcff;">B</span>])<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">F</span>[(<span style="color: #00bcff;">A</span>, <span style="color: #00bcff;">B</span>)] <span style="color: #b6a0ff;">=</span>
+  ap(map(fa)(a <span style="color: #b6a0ff;">=&gt;</span> (b<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">B</span>) <span style="color: #b6a0ff;">=&gt;</span> (a, b)))(fb)
+
+<span style="color: #00bcff;">Applicative</span>[<span style="color: #00bcff;">Option</span>].product(<span style="color: #00bcff;">Option</span>(<span style="color: #00bcff;">10</span>), <span style="color: #00bcff;">Option</span>(<span style="color: #00bcff;">12</span>)).map{<span style="color: #b6a0ff;">case</span> (<span style="color: #00d3d0;">a</span>,<span style="color: #00d3d0;">b</span>) <span style="color: #b6a0ff;">=&gt;</span> a + b}
+<span style="color: #a8a8a8;">// </span><span style="color: #a8a8a8;">Option[Int] = Some(22)</span>
+</pre>
+</div>
+
+<p>
+In prelude product is essentialy defined directly as AssociativeBoth which
+implements a binary associative operator to combine two effects into an effect
+containing a tuple, in other words product.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scala"><span style="color: #00bcff;">AssociativeBoth</span>[<span style="color: #00bcff;">Option</span>].both(<span style="color: #00bcff;">Option</span>(<span style="color: #00bcff;">10</span>), <span style="color: #00bcff;">Option</span>(<span style="color: #00bcff;">12</span>)).map{<span style="color: #b6a0ff;">case</span> (<span style="color: #00d3d0;">a</span>,<span style="color: #00d3d0;">b</span>) <span style="color: #b6a0ff;">=&gt;</span> a + b}
+<span style="color: #a8a8a8;">// </span><span style="color: #a8a8a8;">Option[Int] = Some(22)</span>
+</pre>
+</div>
+
+<p>
+Applicative requires map, ap and pure. We have map from Covariant, the
+equivalent of ap using both from AssociativeBoth and pure uses Identity just
+like with our Monad example.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scala"><span style="color: #b6a0ff;">def</span> <span style="color: #feacd0;">pure</span>[<span style="color: #00bcff;">F</span>[+<span style="color: #b6a0ff;">_</span>] <span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">Covariant</span> <span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">IdentityBoth</span>, <span style="color: #00bcff;">A</span>](a<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">A</span>)(<span style="color: #f78fe7;">implicit</span> i <span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">IdentityBoth</span>[<span style="color: #00bcff;">F</span>])<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">F</span>[<span style="color: #00bcff;">A</span>] <span style="color: #b6a0ff;">=</span> {
+  i.any.map(<span style="color: #b6a0ff;">_</span> <span style="color: #b6a0ff;">=&gt;</span> a)
+}
+pure[<span style="color: #00bcff;">Option</span>,<span style="color: #00bcff;">Int</span>](<span style="color: #00bcff;">12</span>)
+<span style="color: #a8a8a8;">// </span><span style="color: #a8a8a8;">res1: Option[Int] = Some(12)</span>
+pure[<span style="color: #00bcff;">List</span>,<span style="color: #00bcff;">String</span>](<span style="color: #79a8ff;">"Hello"</span>)
+<span style="color: #a8a8a8;">// </span><span style="color: #a8a8a8;">res2: List[String] = List(Hello)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org86f0a9e" class="outline-2">
+<h2 id="org86f0a9e">Sequence and Traverse</h2>
+<div class="outline-text-2" id="text-org86f0a9e">
+<p>
+In the seminal paper Applicative programming with Effects, the first motivating
+example for applicative programming is the sequence function. You have a list of
+effects, specifically Haskell IO effects, and you would like to turn them into
+an <code>IO[List[A]]</code>. You might recognise this as having the same shape and purpose
+as Future.sequence from the Scala standard library. sequence is built with its
+more powerful friend traverse.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scala"><span style="color: #00bcff;">Future</span>.sequence is a function <span style="color: #00bcff;">IterableOnce</span>[<span style="color: #00bcff;">Future</span>[<span style="color: #00bcff;">A</span>]] <span style="color: #b6a0ff;">=&gt;</span> <span style="color: #00bcff;">Future</span>[<span style="color: #00bcff;">IterableOnce</span>[<span style="color: #00bcff;">A</span>]]
+<span style="color: #00bcff;">Future</span>.traverse is a function <span style="color: #00bcff;">IterableOnce</span>[<span style="color: #00bcff;">A</span>], <span style="color: #00bcff;">A</span> <span style="color: #b6a0ff;">=&gt;</span> <span style="color: #00bcff;">Future</span>[<span style="color: #00bcff;">B</span>] <span style="color: #b6a0ff;">=&gt;</span> <span style="color: #00bcff;">Future</span>[<span style="color: #00bcff;">IterableOnce</span>[<span style="color: #00bcff;">B</span>]]
+</pre>
+</div>
+
+<p>
+In Typelevel Cats, the Traverse typeclass makes this more flexible by allows us
+to traverse over any type that is a functor (you can map over it) and foldable
+(you can fold it with foldLeft, foldRight and fold).
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scala"><span style="color: #b6a0ff;">trait</span> <span style="color: #6ae4b9;">Traverse</span>[<span style="color: #00bcff;">F</span>[<span style="color: #b6a0ff;">_</span>]] <span style="color: #b6a0ff;">extends</span> <span style="color: #6ae4b9;">Functor</span>[<span style="color: #00bcff;">F</span>] <span style="color: #b6a0ff;">with</span> <span style="color: #6ae4b9;">Foldable</span>[<span style="color: #00bcff;">F</span>] {
+ <span style="color: #b6a0ff;">def</span> <span style="color: #feacd0;">traverse</span>[<span style="color: #00bcff;">G</span>[<span style="color: #b6a0ff;">_</span>]<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">Applicative</span>, <span style="color: #00bcff;">A</span>, <span style="color: #00bcff;">B</span>](fa<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">F</span>[<span style="color: #00bcff;">A</span>])(f<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">A</span> <span style="color: #b6a0ff;">=&gt;</span> <span style="color: #00bcff;">G</span>[<span style="color: #00bcff;">B</span>])<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">G</span>[<span style="color: #00bcff;">F</span>[<span style="color: #00bcff;">B</span>]]
+}
+</pre>
+</div>
+
+<p>
+What's interesting about Traverse is that it relies on a number of type classes
+to build its expressive power. Ultimately our little friend <code>ap</code> is the king pin
+of the whole thing, allowing us to combine the effects together as we fold in a
+way that is "idiomatic" to the effect type. When we traverse a list of Id for
+example (the identity monad) we get map, and when we traverse a list of Const,
+we get fold. In other words changing the data type is all we need to make
+drastically different programs.
+</p>
+
+<p>
+To demonstrate this in my applicative post, I wrote an implementation of a silly
+algorithm called Sleep Sort. Sleep Sort works by waiting an amount of time-based
+on the value of the number. Emitting the numbers in this way sorts them
+(assuming your scheduler is accurate enough). Let's be clear, this is a stupid
+way to sort numbers, but it does represent some real-world needs we have like
+being able to run effects in parallel.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scala"><span style="color: #b6a0ff;">import</span> zio.<span style="color: #b6a0ff;">_</span>
+<span style="color: #b6a0ff;">import</span> zio.prelude.<span style="color: #b6a0ff;">_</span>
+<span style="color: #b6a0ff;">import</span> zio.console.<span style="color: #b6a0ff;">_</span>
+<span style="color: #b6a0ff;">import</span> zio.clock.<span style="color: #b6a0ff;">_</span>
+<span style="color: #b6a0ff;">def</span> <span style="color: #feacd0;">delayedPrintNumber</span>(s<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">Int</span>)<span style="color: #b6a0ff;">:</span> <span style="color: #6ae4b9;">ZIO</span>[<span style="color: #00bcff;">Console</span> <span style="color: #b6a0ff;">with</span> <span style="color: #6ae4b9;">Clock</span>,<span style="color: #00bcff;">String</span>,<span style="color: #00bcff;">Int</span>] <span style="color: #b6a0ff;">=</span> {
+    putStrLn(s<span style="color: #79a8ff;">"Preparing to say number in </span><span style="color: #00d3d0;">$s</span><span style="color: #79a8ff;"> seconds"</span>) *&gt;
+    putStrLn(s<span style="color: #79a8ff;">"</span><span style="color: #00d3d0;">$s</span><span style="color: #79a8ff;">"</span>).delay(s.seconds) *&gt;
+    <span style="color: #00bcff;">ZIO</span>.succeed(s)
+}
+<span style="color: #b6a0ff;">val</span> <span style="color: #00d3d0;">ios</span> <span style="color: #b6a0ff;">=</span> <span style="color: #00bcff;">List</span>(<span style="color: #00bcff;">6</span>,<span style="color: #00bcff;">5</span>,<span style="color: #00bcff;">2</span>,<span style="color: #00bcff;">1</span>,<span style="color: #00bcff;">3</span>,<span style="color: #00bcff;">8</span>,<span style="color: #00bcff;">4</span>,<span style="color: #00bcff;">7</span>).map(delayedPrintNumber)
+<span style="color: #a8a8a8;">// </span><span style="color: #a8a8a8;">ios: List[ZIO[Console with Clock,String,Int]]</span>
+</pre>
+</div>
+
+<p>
+Using Cats we can use Traverse.sequence to flip the List[Zio] to ZIO[List] and
+then execute it.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scala"><span style="color: #b6a0ff;">import</span> cats.__
+<span style="color: #b6a0ff;">import</span> cats.<span style="color: #00bcff;">Traverse</span>
+<span style="color: #b6a0ff;">val</span> <span style="color: #00d3d0;">runtime</span> <span style="color: #b6a0ff;">=</span> <span style="color: #00bcff;">Runtime</span>.default
+<span style="color: #b6a0ff;">val</span> <span style="color: #00d3d0;">program</span> <span style="color: #b6a0ff;">=</span> <span style="color: #00bcff;">Traverse</span>[<span style="color: #00bcff;">List</span>].traverse(ios)
+runtime.unsafeRun(program)
+</pre>
+</div>
+
+<p>
+Sadly we find this does not work because wanted all the effects to start at once
+and then complete at their alloted times, making the sort work. Instead we'll
+see each executed in sequence.
+</p>
+
+<pre class="example">
+Monadic version
+
+Preparing to say number in 6 seconds
+6
+Preparing to say number in 5 seconds
+5
+// ... and so on for a while
+</pre>
+
+<p>
+Happily thanks to the joys of Applicative we can fix this by changing the data
+type. If we rewrite using Cats Effect we wrap our IO into a different type
+called Par.IO which has a different implementation of applicative that does NOT
+sequence the IOs together but allows them to run in parallel, we can get the
+sleep sort behaviour. We didn't change the structure of our code, just the data
+type!
+</p>
+
+<p>
+Now all of the effects started at the same time and ran in parallel.
+</p>
+
+<pre class="example">
+Preparing to say number in 6 seconds
+Preparing to say number in 2 seconds
+Preparing to say number in 1 seconds
+Preparing to say number in 3 seconds
+Preparing to say number in 8 seconds
+Preparing to say number in 4 seconds
+Preparing to say number in 7 seconds
+Preparing to say number in 5 seconds
+1
+2
+3
+4
+5
+6
+7
+8
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org945ad7b" class="outline-2">
+<h2 id="org945ad7b">ZIO Effects and Prelude</h2>
+<div class="outline-text-2" id="text-org945ad7b">
+<p>
+Let's visit the same problem using our ZIO effects above. One thing I really
+like about prelude is how combinations of its algebras are mapped to ZIO
+effects. In this table we have two ZIO effects <code>fa : ZIO[R, E, A]</code> and <code>fb :
+ZIO[R, E, B]</code> that are combined in different ways just by changing the algebra.
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Algebra</th>
+<th scope="col" class="org-left">ZIO instance implementation</th>
+<th scope="col" class="org-left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">AssociativeBoth</td>
+<td class="org-left">fa zip fb</td>
+<td class="org-left">fa first then fb iff fa succeeds, returning ZIO[R,E,(A,B)]</td>
+</tr>
+
+<tr>
+<td class="org-left">AssociativeEither</td>
+<td class="org-left">fa.orElseEither(fb)</td>
+<td class="org-left">fa first then if it fails fb, returning ZIO[R,E,Either[A,B]]</td>
+</tr>
+
+<tr>
+<td class="org-left">CommutativeBoth</td>
+<td class="org-left">fa zipPar fb</td>
+<td class="org-left">fa and fb at the same time, returning ZIO[R,E,(A,B)]</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+This is really nice and similar in spirit to what we did with Cats Traverse.
+</p>
+
+<p>
+ZIO's implementation of Traverse has eschewed conventional names for some
+functions in favour or more common words, so for example sequence is just flip,
+which describes the flipping of the <code>F[G[A]]</code> to a <code>G[F[A]]</code>. We should be able
+to just flip our list of ZIOs and execute them using traverse.
+</p>
+
+<p>
+However, when we come back to Traverable prelude's (version of Traverse) there
+are two difficulties.
+</p>
+</div>
+
+<div id="outline-container-org04dd83b" class="outline-3">
+<h3 id="org04dd83b">Problem 1. Traversable doesn't handle empty structures</h3>
+<div class="outline-text-3" id="text-org04dd83b">
+<p>
+Perhaps by design, you cannot just take a list of ZIO effects and Traverse them,
+because the flip function requires the G parameter to have the IdentityBoth
+algebra. That algebra lets us combine two effects to a tuple, and there is an
+identity element. ZIO effects do not have an instance of the IdentityBoth
+algebra and as such cannot be used with Traverable.
+</p>
+
+<p>
+We can get around this by using the NonEmptyTraversable which implements the
+Traversable type class for non-empty structures. Its functions are postfixed
+with a 1 to indicate they require at least one element to work with, and use
+AssociativeBoth algebra which ZIO has as you can see above.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org302cf8f" class="outline-3">
+<h3 id="org302cf8f">Problem 2. We don't have a way to change from sequenced to parallel execution</h3>
+<div class="outline-text-3" id="text-org302cf8f">
+<p>
+When we were dealing with Applicatives we can change the data type to select a
+different applicative and get a different combining method. This is a crucial
+part of Traverse IMHO. This functionality is missing because the algebra is
+hardcoded. We can't used the Algebra of choice from the table above (we would
+need to use CommutativeBoth to get the parallel execution the sleep sort needs).
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgfdc6661" class="outline-3">
+<h3 id="orgfdc6661">Running the code</h3>
+<div class="outline-text-3" id="text-orgfdc6661">
+<div class="org-src-container">
+<pre class="src src-scala"><span style="color: #b6a0ff;">val</span> <span style="color: #00d3d0;">runtime</span> <span style="color: #b6a0ff;">=</span> <span style="color: #00bcff;">Runtime</span>.default
+runtime.unsafeRun(<span style="color: #00bcff;">NonEmptyTraversable</span>[<span style="color: #00bcff;">NonEmptyList</span>].flip1(ios))
+</pre>
+</div>
+
+<p>
+Sadly the best we can do at the moment is to use flip1 but we are limited to
+sequential execution.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org47e5877" class="outline-3">
+<h3 id="org47e5877">Possible Solutions</h3>
+<div class="outline-text-3" id="text-org47e5877">
+<p>
+I talked to Adam Fraser about this and the probable solution will be a
+forthcoming newtype called Parallel which can wrap your effects with. This would
+work but feels a bit strange because we already had algebras that change
+behaviours but we can't freely use them in this context, and having additional
+newtypes seems like it violates the don't repeat yourself (DRY) principle.
+</p>
+
+<p>
+Another possible solution would be to have additional Traverse types with
+different algebras. Neither solution seems as clean as the Applicative one at
+this point.
+</p>
+
+<p>
+One advantage of Applicatives is that you can compose any two with each other.
+As an advanced example from one of my talks I compose Const, IO and Parallel
+together, and take advantage of Monoidal composition, to execute a list of IO
+operations and gather statistics on the results as well as collecting the
+values. 
+</p>
+
+<div class="org-src-container">
+<pre class="src src-scala"><span style="color: #b6a0ff;">val</span> <span style="color: #00d3d0;">program</span> <span style="color: #b6a0ff;">=</span> <span style="color: #00bcff;">Traverse</span>[<span style="color: #00bcff;">List</span>].traverse(<span style="color: #00bcff;">List</span>(<span style="color: #00bcff;">1</span>,<span style="color: #00bcff;">2</span>,<span style="color: #00bcff;">3</span>,<span style="color: #00bcff;">4</span>,<span style="color: #00bcff;">8</span>)) {
+  n <span style="color: #b6a0ff;">=&gt;</span>
+  <span style="color: #00bcff;">Nested</span>[<span style="color: #00bcff;">IO</span>.<span style="color: #00bcff;">Par</span>,<span style="color: #00bcff;">Const</span>[(<span style="color: #00bcff;">Long</span>, <span style="color: #00bcff;">Int</span>, <span style="color: #00bcff;">List</span>[<span style="color: #00bcff;">String</span>], <span style="color: #00bcff;">List</span>[<span style="color: #00bcff;">Long</span>]),?], <span style="color: #00bcff;">String</span>](
+    <span style="color: #00bcff;">Par</span>(time(exampleIO(n)).map{
+      <span style="color: #b6a0ff;">case</span> <span style="color: #b6a0ff;">_</span> <span style="color: #b6a0ff;">=&gt;</span>  (time, a) <span style="color: #b6a0ff;">=&gt;</span>
+         <span style="color: #00bcff;">Const</span>((time, <span style="color: #00bcff;">1</span>, <span style="color: #00bcff;">List</span>(a), <span style="color: #00bcff;">List</span>(time)))
+        })
+  )
+}
+</pre>
+</div>
+
+<p>
+<a href="https://youtu.be/T_0IE8PF1sY">https://youtu.be/T_0IE8PF1sY</a>
+<a href="https://docs.google.com/presentation/d/1MvPBfmUIOuvM-vjjYz6lrhQNQ7hPLzKkTR9I73uoTak/edit?usp=sharing">https://docs.google.com/presentation/d/1MvPBfmUIOuvM-vjjYz6lrhQNQ7hPLzKkTR9I73uoTak/edit?usp=sharing</a>
+</p>
+
+<p>
+In theory Prelude should be able to bring the same level of composition; maybe
+even surpass it.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org705e9a7" class="outline-2">
+<h2 id="org705e9a7">Some final defense for ap</h2>
+<div class="outline-text-2" id="text-org705e9a7">
+<p>
+Whilst ap is certainly not a perfect for Scala, what it does have going for it
+from a pedagogical point of view is that you can teach Functor, Monad and
+Applicative as being three ways to map a <code>F[A] =&gt; F[B]</code>. The only difference
+between them is the "shape" of the function you use to do the mapping. With
+functor the pure function <code>A =&gt; B</code> defines the Functor as letting us run a pure
+function on an effect. With flatMap the function <code>A =&gt; F[B]</code> lets us compose two
+effects together, with the result of one passed to the second. And finally, with
+Applicative, the <code>F[A =&gt; B]</code> function is the building block for running two
+independent effects together.
+</p>
+
+<p>
+With that out of the way, and with the student sufficiently guided through the
+process of currying and the implementation of map2, map3 etc, we can move on
+from ap and maybe never look at it again. Applicative is still applicative
+whether you formulate it with <code>pure</code> and <code>ap</code>, with <code>product</code>, or with <code>map2</code>.
+You can enjoy the benefits of Applicative without adopting the red-headed
+stepchild we call <code>ap</code>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8d6603c" class="outline-2">
+<h2 id="org8d6603c">Things I missed</h2>
+<div class="outline-text-2" id="text-org8d6603c">
+<p>
+I intend to write more on Prelude soon, but until I do here the bits I didn't
+mention that are nevertheless very interesting features.
+</p>
+
+<p>
+Variance. If you tend to ignore variance in your Scala that will likely change
+in Prelude. I tend to stick to invariant types a lot of the time, but Prelude's
+design encourages call site variance, and we should start to see interesting
+examples of what that empowers us to do more of. In the talk John's example was
+that he wanted to map an A to B but have more control over what the B is;
+perhaps it is a Spark serializable type&#x2026;
+</p>
+
+<p>
+ZPure. When ZIO came along it brought the idea of getting rid of stacks of Monad
+transformers by putting all that functionality (error channels, read-only
+environments) into an effect. With ZPure we get to do a similar thing for none
+IO effects. ZPure gives you a State monad, a read only environment. I expect
+ZPure will be an important building block for ZIO and Prelude code, and I'm
+looking forward to playing with it some more.
+</p>
+
+<p>
+Newtypes. Prelude comes With a nice newtype implementation. I haven't looked
+into it much, but it seems to work quite well with minimal effort.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgda4659c" class="outline-2">
+<h2 id="orgda4659c">Wrapping things up</h2>
+<div class="outline-text-2" id="text-orgda4659c">
+<p>
+As zio-prelude evolves I expect it will at first grow, then shed some features
+into modules or libraries, before shrinking to a smaller but coherent core.
+</p>
+
+<p>
+At this point I believe Prelude is a very interesting new addition to the Scala
+functional programming library ecosystem. Those experienced with the
+Haskell-like way of doing things will probably find its way of doing things
+pretty strange at first, and I don't know how long that feeling will last.
+</p>
+
+<p>
+Another question is whether functional programming in Scala will further
+bifurcate. As Prelude and ZIO become more closely intertwined (they already
+depend on each other), I expect that some people will be put off by the novelty
+of Prelude and stick with the Cats ecosystem, while others will avoid things
+built on Cats in order to stay in the ZIO and Prelude world.
+</p>
+
+<p>
+Ultimately time will tell whether Prelude's approach will make a big impact on
+Scala functional programming. In any event the best ideas will live on.
+</p>
+
+<p>
+&copy; 2020 Justin Heyes-Jones. All Rights Reserved.
+</p>
+</div>
+</div>
+
+  </div>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-6582321-6', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+</article>
+
+
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

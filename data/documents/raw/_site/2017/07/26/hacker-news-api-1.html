@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  <title>Hacker News API Part 1</title>
+  <meta name="description" content="Previous post: Future with Timeout">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://localhost:4003/2017/07/26/hacker-news-api-1.html">
+  <link rel="alternate" type="application/rss+xml" title="Functional[Justin]" href="http://localhost:4003/feed.xml">
+</head>
+
+
+  
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-YDJ0HSM9M6"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-YDJ0HSM9M6');
+  </script>
+
+  <body>
+
+    <header class="site-header">
+  
+    <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-3">
+	<h5><a class="site-title" href="/">Functional[Justin]</a></h5>
+      </div>
+    </div>
+
+    <div class="footer-col-wrapper">
+      
+      <div class="footer-col footer-col-1">
+        <p>
+          <img class="circle" width="110px" src="/images/justinnew.png"/></p>
+
+      </div>
+      
+      <div class="footer-col footer-col-2">
+        <p>Justin is a British/Canadian software engineer at Treasure Data, functional programming, polyglot, Neovim and Emacs. </p>
+      </div>
+      
+      <div class="footer-col footer-col-3">
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/justinhj"><span class="icon icon--github"><svg viewBox="0 0 16 16"><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/></svg>
+</span><span class="username">justinhj</span></a>
+
+          </li>
+          
+	  
+	  <li>
+	    <a href="mailto:justinhj+blog@gmail.com">
+	      <span class="icon">
+		<img src="/images/email.png"/>
+	      </span>
+	      <span class="username">
+		justinhj@gmail.com
+	      </span>
+	    </a>
+	  </li>
+
+          <li>
+            <a href="https://gitter.im/justinhj">
+            <span class="icon">
+              <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 98.7 16.3" data-v-44ebcb1a=""><g><path d="M20.9,0.3h2.6v15.8h-2.6V0.3z"></path> <path d="M34.8,2.9h-4V0.3h11.8v2.6h-5.2v13.2h-2.6V2.9z"></path> <path d="M51.9,2.9h-4V0.3h11.8v2.6h-5.2v13.2h-2.6V2.9z"></path> <path d="M66.4,0.3h11.8v2.6H69v3.9h7.9v2.6H69v4h9.2v2.6H66.4V0.3z"></path> <path d="M98.7,16.1l-4.2-5.9c1.7-0.9,2.8-2.5,2.8-4.6c0-3.1-2.5-5.3-5.7-5.3l-6.2,0v15.8h2.6l0-5.3
+    c0,0,3.6,0,3.6,0l3.8,5.3H98.7z M88.1,8.2l0-5.3l3.5,0c1.7,0,3,1,3,2.6c0,1.7-1.4,2.6-3,2.6L88.1,8.2z"></path> <path d="M7.9,7.1v2.6l3.9,0c0,0,0,1.4,0,2.3c-0.1,0.2-0.4,1.8-3.8,1.8c-0.2,0-0.3,0-0.5,0
+    c-0.1,0-0.2,0-0.2,0c-0.1,0-0.2,0-0.2,0c-0.1,0-0.2-0.1-0.3-0.1c-0.1,0-0.1,0-0.2-0.1c0,0-0.1,0-0.1,0c-2.1-0.7-3.5-2.8-3.5-5.3
+    l0,0v0v0c0-0.3,0-0.5,0.1-0.8C3.3,4.7,5.4,2.5,8,2.5c0.9,0,2.5,0.3,3.6,1.5l1.5-2.2c0,0-1.3-1.9-5-1.9C3.7,0,0.4,3.3,0,7.3
+    c0,0.3,0,0.6,0,0.8l0,0l0,0c0,4.3,3.2,7.9,7.7,8.1c0.2,0,0.3,0,0.5,0c0,0,0.1,0,0.1,0c0.3,0,0.5,0,0.7,0c0.1,0,0.2,0,0.3,0
+    c0.2,0,0.3,0,0.5-0.1c2.7-0.1,4.7-2.3,4.7-3.4c0-5,0-5.7,0-5.7H7.9z"></path></g></svg>
+            </span>
+            <span class="username">
+              justinhj
+            </span>
+</a>
+          </li>
+	  <li>
+	    <a href="https://www.linkedin.com/in/justinheyesjones">
+	      <span class="icon">
+		<img src="/images/linkedin.png"/>
+	      </span>
+	      <span class="username">
+		LinkedIn
+	      </span>
+	    </a>
+	  </li>
+
+	  
+          <li>
+            <a href="https://twitter.com/justinhj"><span class="icon icon--twitter"><svg viewBox="0 0 16 16"><path fill="#828282" d="M15.969,3.058c-0.586,0.26-1.217,0.436-1.878,0.515c0.675-0.405,1.194-1.045,1.438-1.809c-0.632,0.375-1.332,0.647-2.076,0.793c-0.596-0.636-1.446-1.033-2.387-1.033c-1.806,0-3.27,1.464-3.27,3.27 c0,0.256,0.029,0.506,0.085,0.745C5.163,5.404,2.753,4.102,1.14,2.124C0.859,2.607,0.698,3.168,0.698,3.767 c0,1.134,0.577,2.135,1.455,2.722C1.616,6.472,1.112,6.325,0.671,6.08c0,0.014,0,0.027,0,0.041c0,1.584,1.127,2.906,2.623,3.206 C3.02,9.402,2.731,9.442,2.433,9.442c-0.211,0-0.416-0.021-0.615-0.059c0.416,1.299,1.624,2.245,3.055,2.271 c-1.119,0.877-2.529,1.4-4.061,1.4c-0.264,0-0.524-0.015-0.78-0.046c1.447,0.928,3.166,1.469,5.013,1.469 c6.015,0,9.304-4.983,9.304-9.304c0-0.142-0.003-0.283-0.009-0.423C14.976,4.29,15.531,3.714,15.969,3.058z"/></svg>
+</span><span class="username">justinhj</span></a>
+
+          </li>
+          
+
+	  
+        </ul>
+      </div>
+      
+    </div>
+
+    <div class="my-links">
+      <span class="page-link">
+      	<a href="/index.html">Posts by Date</a>
+       </span>
+
+      <span class="page-link">
+      	<a href="/topposts.html">Popular Posts</a>
+      </span>
+
+      <span class="page-link">
+      	<a href="https://www.youtube.com/c/FunctionalJustin">YouTube channel</a>
+       </span>
+
+      <span class="page-link">
+      	<a href="/talks.html">Speaking Events</a>
+       </span>
+
+      <span class="page-link">
+      	<a href="/privacy.html">Privacy</a>
+      </span>
+
+      </div>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        
+
+  
+
+  <!-- Iterate over the tags in this post -->
+  
+
+
+
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">Hacker News API Part 1</h1>
+    <p class="post-meta"><time datetime="2017-07-26T16:00:00-07:00" itemprop="datePublished">Jul 26, 2017</time></p>
+    <div class="post-meta">
+      
+        
+        
+        More posts about
+    
+      <i class="fa fa-tags"></i>
+    
+  
+        <a href="/tag/scala/">
+        Scala</a>
+        
+          ,
+        
+      
+        <a href="/tag/functional-programming/">
+        Functional Programming</a>
+        
+          ,
+        
+      
+        <a href="/tag/hacker-news-api/">
+        Hacker News Api</a>
+        
+      
+    </div>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p>Previous post: <a href="/2017/07/16/future-with-timeout.html">Future with Timeout</a></p>
+
+<p>Github project related to this post <a href="https://github.com/justinhj/hnfetch">hnfetch</a></p>
+
+<p>This is a quick post that will develop code to query <a href="https://news.ycombinator.com/news">Hacker News</a> stories and users using the provided Firebase <a href="https://github.com/HackerNews/API">API</a>. Although you can access the API using a Firebase client library, I thought it would be fun to develop my own to revisit some of the error handling topics from previous posts and demonstrate a couple of common libraries in the Scala ecosystem.</p>
+
+<p>We will only be concerned with queries, so all we need to pull data down from the API is a HTTP library. I’ll use <a href="https://github.com/scalaj/scalaj-http">ScalaJ-HTTP</a>. This is a nice and simple library that is also thread safe, so although it doesn’t offer an Asynchronous API, we can use Scala’s concurrency library to make it behave like it is.</p>
+
+<p>Since the data will come back as JSON we need to parse it into Scala data structures. In production projects I’d recommend a more full featured and performant library such as <a href="https://github.com/FasterXML/jackson-module-scala">Scala Jackson</a>, but a much easier to use library <a href="http://www.lihaoyi.com/upickle-pprint/upickle/">uPickle</a></p>
+
+<p>Finally we’ll include scalatest so we can write some tests as we go. I’ll post a link to the working code at the end of the post but for now here are the required dependencies.</p>
+
+<figure class="highlight"><pre><code class="language-scala" data-lang="scala">  <span class="s">"org.scalaj"</span> <span class="o">%%</span> <span class="s">"scalaj-http"</span> <span class="o">%</span> <span class="s">"2.3.0"</span><span class="o">,</span>
+  <span class="s">"com.lihaoyi"</span> <span class="o">%%</span> <span class="s">"upickle"</span> <span class="o">%</span> <span class="s">"0.4.4"</span><span class="o">,</span>
+  <span class="s">"org.typelevel"</span> <span class="o">%%</span> <span class="s">"cats"</span> <span class="o">%</span> <span class="s">"0.9.0"</span><span class="o">,</span>
+  <span class="s">"org.ocpsoft.prettytime"</span> <span class="o">%</span> <span class="s">"prettytime"</span> <span class="o">%</span> <span class="s">"3.2.7.Final"</span><span class="o">,</span>
+  <span class="s">"org.scalatest"</span> <span class="o">%%</span> <span class="s">"scalatest"</span> <span class="o">%</span> <span class="s">"3.0.1"</span> <span class="o">%</span> <span class="s">"test"</span><span class="o">,</span>
+  <span class="s">"com.lihaoyi"</span> <span class="o">%</span> <span class="s">"ammonite"</span> <span class="o">%</span> <span class="s">"1.0.0"</span> <span class="o">%</span> <span class="s">"test"</span> <span class="n">cross</span> <span class="nv">CrossVersion</span><span class="o">.</span><span class="py">full</span></code></pre></figure>
+
+<p>I’ve also add lihaoyi’s ammonite library, set up so that you run the job test:run in sbt and get an interactive repl to play with the api.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; test:run
+[info] Running amm 
+Welcome to the Ammonite Repl 1.0.0
+(Scala 2.12.2 Java 1.8.0_60)
+If you like Ammonite, please support our development at www.patreon.com/lihaoyi
+@ import justinhj.hnfetch._ 
+import justinhj.hnfetch._
+@ val f1 = HNFetch.getUser("justinhj") 
+f1: concurrent.Future[Either[String, HNFetch.HNUser]] = Future(&lt;not completed&gt;)
+@ f1 
+res2: concurrent.Future[Either[String, HNFetch.HNUser]] = Future(Success(Right(HNUser(justinhj,1249966944,1247, ... 
+</code></pre></div></div>
+
+<p>We’ll build up a simple companion object HNFetch to do all the work and put it in the file <code class="language-plaintext highlighter-rouge">src/main/justin/hnfetch/HNFetch.scala</code></p>
+
+<p>When using scalaj-http we can use the built in Http object to do all out queries but it also is simple to override it with some custom options. Let’s do that and change the user agent:</p>
+
+<figure class="highlight"><pre><code class="language-scala" data-lang="scala">  <span class="k">object</span> <span class="nc">CustomHttp</span> <span class="k">extends</span> <span class="nc">BaseHttp</span><span class="o">(</span>
+    <span class="n">proxyConfig</span> <span class="k">=</span> <span class="nc">None</span><span class="o">,</span>
+    <span class="n">options</span> <span class="k">=</span> <span class="nv">HttpConstants</span><span class="o">.</span><span class="py">defaultOptions</span><span class="o">,</span>
+    <span class="n">charset</span> <span class="k">=</span> <span class="nv">HttpConstants</span><span class="o">.</span><span class="py">utf8</span><span class="o">,</span>
+    <span class="n">sendBufferSize</span> <span class="k">=</span> <span class="mi">4096</span><span class="o">,</span>
+    <span class="n">userAgent</span> <span class="k">=</span> <span class="s">"justinhj/hnfetch/1.0"</span><span class="o">,</span>
+    <span class="n">compress</span> <span class="k">=</span> <span class="kc">false</span>
+  <span class="o">)</span></code></pre></figure>
+
+<p>All API calls will share the same base URL so let’s define that and then constructing the query URL’s is straightforward. I’ll just define a few here for now…</p>
+
+<figure class="highlight"><pre><code class="language-scala" data-lang="scala">  <span class="k">val</span> <span class="nv">baseHNURL</span> <span class="k">=</span> <span class="s">"https://hacker-news.firebaseio.com/v0/"</span>
+
+  <span class="k">def</span> <span class="nf">getUserURL</span><span class="o">(</span><span class="n">userId</span><span class="k">:</span> <span class="kt">HNUserID</span><span class="o">)</span> <span class="k">=</span> <span class="n">s</span><span class="s">"${baseHNURL}user/$userId.json"</span>
+  <span class="k">def</span> <span class="nf">getItemURL</span><span class="o">(</span><span class="n">itemId</span><span class="k">:</span> <span class="kt">HNItemID</span><span class="o">)</span> <span class="k">=</span> <span class="n">s</span><span class="s">"${baseHNURL}item/$itemId.json"</span>
+  <span class="k">val</span> <span class="nv">getTopItemsURL</span> <span class="k">=</span> <span class="n">s</span><span class="s">"${baseHNURL}topstories.json"</span>
+  </code></pre></figure>
+
+<p>Actually making the query is very simple <code class="language-plaintext highlighter-rouge">CustomHttp(url).asString</code>. The <code class="language-plaintext highlighter-rouge">asString</code> part actually executes our query in a blocking manner and returns the response as string data. On success we can parse the result into case classes representing the data and we’re done.</p>
+
+<p>One thing to note is that uPickle handles Option types by writing them as JSON arrays. For example Option<a href="1">Int</a> would be saved as [1] whilst None would saved as []. Now the Hacker News API has some mandatory fields and others that are optional. Since we can’t tell the API to store options in a uPickle friendly way, we must use default values for any fields that are not mandatory. That means I needed to take the rather ugly step of defining ‘missing IDs’ which you can see in the code below defining the data structures we’ll deal with…</p>
+
+<figure class="highlight"><pre><code class="language-scala" data-lang="scala">  <span class="k">type</span> <span class="kt">HNUserID</span> <span class="o">=</span> <span class="nc">String</span>
+  <span class="k">type</span> <span class="kt">HNItemID</span> <span class="o">=</span> <span class="nc">Int</span>
+
+  <span class="k">val</span> <span class="nv">HNMissingItemID</span> <span class="k">:</span> <span class="kt">HNItemID</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+  <span class="k">val</span> <span class="nv">HNMissingUserID</span> <span class="k">:</span> <span class="kt">HNUserID</span> <span class="o">=</span> <span class="s">""</span>
+
+  <span class="k">case</span> <span class="k">class</span> <span class="nc">HNUser</span> <span class="o">(</span>
+                    <span class="n">id</span> <span class="k">:</span> <span class="kt">HNUserID</span><span class="o">,</span> <span class="c1">// The user's unique username. Case-sensitive. Required.</span>
+                    <span class="c1">//delay : Int, // Delay in minutes between a comment's creation and its visibility to other users.</span>
+                    <span class="n">created</span> <span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="c1">// Creation date of the user, in Unix Time.</span>
+                    <span class="n">karma</span> <span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="c1">// The user's karma.</span>
+                    <span class="n">about</span> <span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="c1">// The user's optional self-description. HTML.</span>
+                    <span class="n">submitted</span> <span class="k">:</span> <span class="kt">List</span><span class="o">[</span><span class="kt">HNItemID</span><span class="o">]</span> <span class="o">)</span> <span class="c1">// List of the user's stories, polls and comments.</span>
+
+  <span class="k">case</span> <span class="k">class</span> <span class="nc">HNItem</span><span class="o">(</span>
+                     <span class="n">id</span> <span class="k">:</span> <span class="kt">HNItemID</span><span class="o">,</span> <span class="c1">// The item's unique id.</span>
+                     <span class="n">deleted</span> <span class="k">:</span> <span class="kt">Boolean</span> <span class="o">=</span> <span class="kc">false</span><span class="o">,</span> <span class="c1">// true if the item is deleted.</span>
+                     <span class="n">`type`</span> <span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="c1">// The type of item. One of "job", "story", "comment", "poll", or "pollopt".</span>
+                     <span class="n">by</span> <span class="k">:</span> <span class="kt">HNUserID</span> <span class="o">=</span> <span class="nc">HNMissingUserID</span><span class="o">,</span> <span class="c1">// The username of the item's author.</span>
+                     <span class="n">time</span> <span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="c1">// Creation date of the item, in Unix Time.</span>
+                     <span class="n">text</span> <span class="k">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="s">""</span><span class="o">,</span> <span class="c1">// The comment, story or poll text. HTML.</span>
+                     <span class="n">dead</span> <span class="k">:</span> <span class="kt">Boolean</span> <span class="o">=</span> <span class="kc">false</span><span class="o">,</span> <span class="c1">// true if the item is dead.</span>
+                     <span class="n">parent</span> <span class="k">:</span> <span class="kt">HNItemID</span> <span class="o">=</span> <span class="nc">HNMissingItemID</span><span class="o">,</span> <span class="c1">// The comment's parent: either another comment or the relevant story.</span>
+                     <span class="n">poll</span> <span class="k">:</span> <span class="kt">HNItemID</span> <span class="o">=</span> <span class="nc">HNMissingItemID</span><span class="o">,</span> <span class="c1">// The pollopt's associated poll.</span>
+                     <span class="n">kids</span> <span class="k">:</span> <span class="kt">List</span><span class="o">[</span><span class="kt">HNItemID</span><span class="o">]</span> <span class="k">=</span> <span class="nc">List</span><span class="o">(),</span> <span class="c1">// The ids of the item's comments, in ranked display order.</span>
+                     <span class="n">url</span> <span class="k">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="s">""</span><span class="o">,</span> <span class="c1">// The URL of the story.</span>
+                     <span class="n">score</span> <span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="o">,</span> <span class="c1">// The story's score, or the votes for a pollopt.</span>
+                     <span class="n">title</span> <span class="k">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="s">""</span><span class="o">,</span> <span class="c1">// The title of the story, poll or job.</span>
+                     <span class="n">parts</span> <span class="k">:</span> <span class="kt">List</span><span class="o">[</span><span class="kt">HNItemID</span><span class="o">]</span> <span class="k">=</span> <span class="nc">List</span><span class="o">(),</span> <span class="c1">// A list of related pollopts, in display order.</span>
+                     <span class="n">descendants</span> <span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1">// In the case of stories or polls, the total comment count.</span>
+                   <span class="o">)</span></code></pre></figure>
+
+<p>The final step is to write code to fetch and parse the data. Since the only difference between fetching a User and a Story is the type of the case class we parse, I wrote a function that is parameterized by the type and handles making the call asynchronous with errors reported in an Either …</p>
+
+<figure class="highlight"><pre><code class="language-scala" data-lang="scala">  <span class="k">def</span> <span class="nf">hnRequest</span><span class="o">[</span><span class="kt">T</span><span class="o">](</span><span class="n">url</span><span class="k">:</span> <span class="kt">String</span><span class="o">)(</span><span class="k">implicit</span> <span class="n">r</span><span class="k">:</span> <span class="kt">Reader</span><span class="o">[</span><span class="kt">T</span><span class="o">])</span> <span class="k">:</span> <span class="kt">Future</span><span class="o">[</span><span class="kt">Either</span><span class="o">[</span><span class="kt">String</span>, <span class="kt">T</span><span class="o">]]</span> <span class="k">=</span> <span class="o">{</span>
+
+    <span class="nc">Future</span> <span class="o">{</span><span class="nc">CustomHttp</span><span class="o">(</span><span class="n">url</span><span class="o">).</span><span class="py">asString</span><span class="o">}.</span><span class="py">map</span> <span class="o">{</span>
+      <span class="n">response</span> <span class="k">=&gt;</span>
+        <span class="nf">if</span><span class="o">(</span><span class="nv">response</span><span class="o">.</span><span class="py">code</span> <span class="o">==</span> <span class="mi">200</span><span class="o">)</span> <span class="o">{</span>
+          <span class="nc">Try</span><span class="o">(</span><span class="n">read</span><span class="o">[</span><span class="kt">T</span><span class="o">](</span><span class="nv">response</span><span class="o">.</span><span class="py">body</span><span class="o">))</span> <span class="k">match</span> <span class="o">{</span>
+            <span class="k">case</span> <span class="nc">Success</span><span class="o">(</span><span class="n">good</span><span class="o">)</span> <span class="k">if</span> <span class="n">good</span> <span class="o">==</span> <span class="kc">null</span> <span class="k">=&gt;</span>
+              <span class="nf">println</span><span class="o">(</span><span class="s">"got empty"</span><span class="o">)</span>
+              <span class="nc">Left</span><span class="o">(</span><span class="s">"Not found"</span><span class="o">)</span>
+            <span class="k">case</span> <span class="nc">Success</span><span class="o">(</span><span class="n">good</span><span class="o">)</span> <span class="k">=&gt;</span>
+              <span class="nf">println</span><span class="o">(</span><span class="s">"got successfully"</span><span class="o">)</span>
+              <span class="nc">Right</span><span class="o">(</span><span class="n">good</span><span class="o">)</span>
+            <span class="k">case</span> <span class="nc">Failure</span><span class="o">(</span><span class="n">e</span><span class="o">)</span> <span class="k">=&gt;</span>
+              <span class="nf">println</span><span class="o">(</span><span class="n">s</span><span class="s">"got parse error ${response.body}"</span><span class="o">)</span>
+              <span class="nc">Left</span><span class="o">(</span><span class="s">"Failed to read "</span> <span class="o">+</span> <span class="nv">e</span><span class="o">.</span><span class="py">getMessage</span><span class="o">())</span>
+          <span class="o">}</span>
+        <span class="o">}</span>
+        <span class="k">else</span> <span class="o">{</span>
+          <span class="nf">println</span><span class="o">(</span><span class="s">"got no response"</span><span class="o">)</span>
+          <span class="nc">Left</span><span class="o">(</span><span class="n">s</span><span class="s">"Failed to retrieve $url code: ${response.code}"</span><span class="o">)</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+      <span class="o">.</span><span class="py">recover</span> <span class="o">{</span>
+        <span class="k">case</span> <span class="n">e</span> <span class="k">:</span> <span class="kt">Exception</span> <span class="o">=&gt;</span>
+          <span class="nf">println</span><span class="o">(</span><span class="n">s</span><span class="s">"got exception ${e.getMessage} due to ${e.getCause}"</span><span class="o">)</span>
+          <span class="nc">Left</span><span class="o">(</span><span class="s">"Failed to retrieve $url becasue ${e.getMessage}"</span><span class="o">)</span>
+      <span class="o">}</span>
+  <span class="o">}</span></code></pre></figure>
+
+<p>With all this in place writing queries is simple:</p>
+
+<figure class="highlight"><pre><code class="language-scala" data-lang="scala">  <span class="c1">// constuct the query to get an item</span>
+  <span class="k">def</span> <span class="nf">getUser</span><span class="o">(</span><span class="n">userID</span><span class="k">:</span> <span class="kt">HNUserID</span><span class="o">)</span> <span class="k">:</span> <span class="kt">Future</span><span class="o">[</span><span class="kt">Either</span><span class="o">[</span><span class="kt">String</span>, <span class="kt">HNUser</span><span class="o">]]</span> <span class="k">=</span> <span class="o">{</span>
+    <span class="k">val</span> <span class="nv">url</span> <span class="k">=</span> <span class="nf">getUserURL</span><span class="o">(</span><span class="n">userID</span><span class="o">)</span>
+
+    <span class="nf">println</span><span class="o">(</span><span class="n">s</span><span class="s">"GET $url"</span><span class="o">)</span>
+    <span class="n">hnRequest</span><span class="o">[</span><span class="kt">HNUser</span><span class="o">](</span><span class="n">url</span><span class="o">)</span>
+  <span class="o">}</span>
+
+  <span class="k">def</span> <span class="nf">getItem</span><span class="o">(</span><span class="n">itemId</span><span class="k">:</span> <span class="kt">HNItemID</span><span class="o">)</span> <span class="k">:</span> <span class="kt">Future</span><span class="o">[</span><span class="kt">Either</span><span class="o">[</span><span class="kt">String</span>, <span class="kt">HNItem</span><span class="o">]]</span> <span class="k">=</span> <span class="o">{</span>
+    <span class="k">val</span> <span class="nv">url</span> <span class="k">=</span> <span class="nf">getItemURL</span><span class="o">(</span><span class="n">itemId</span><span class="o">)</span>
+
+    <span class="nf">println</span><span class="o">(</span><span class="n">s</span><span class="s">"GET $url"</span><span class="o">)</span>
+    <span class="n">hnRequest</span><span class="o">[</span><span class="kt">HNItem</span><span class="o">](</span><span class="n">url</span><span class="o">)</span>
+  <span class="o">}</span>
+
+  <span class="k">type</span> <span class="kt">HNItemIDList</span> <span class="o">=</span> <span class="nc">List</span><span class="o">[</span><span class="kt">HNItemID</span><span class="o">]</span>
+
+  <span class="k">def</span> <span class="nf">getTopItems</span><span class="o">()</span> <span class="k">:</span> <span class="kt">Future</span><span class="o">[</span><span class="kt">Either</span><span class="o">[</span><span class="kt">String</span>, <span class="kt">HNItemIDList</span><span class="o">]]</span> <span class="k">=</span> <span class="o">{</span>
+    <span class="n">hnRequest</span><span class="o">[</span><span class="kt">HNItemIDList</span><span class="o">](</span><span class="n">getTopItemsURL</span><span class="o">)</span>
+  <span class="o">}</span></code></pre></figure>
+
+<p>There are some scalatest tests that check the ‘happy path’, if this was a real project I would add more tests for failure’s of various kinds but take a look if you are interested in the new <code class="language-plaintext highlighter-rouge">AsyncFlatSpec</code> for testing futures more conveniently.</p>
+
+<p>Finally let’s write a main program to test drive the functions. I’ve tried to make the output mirror the Hacker News home page, just for fun. One interesting thing is the part which prints relative times on the posts such as “3 minutes ago” and “2 days ago”. Rather than implement that myself I imported the library <code class="language-plaintext highlighter-rouge">org.ocpsoft.prettytime</code> which makes this a breeze.</p>
+
+<p>Here’s a look at the code that prints a page of news items:</p>
+
+<figure class="highlight"><pre><code class="language-scala" data-lang="scala">  <span class="k">def</span> <span class="nf">printPage</span><span class="o">(</span><span class="n">startPage</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">numItemsPerPage</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span> <span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
+
+    <span class="c1">// helper to show the article rank</span>
+    <span class="k">def</span> <span class="nf">itemNum</span><span class="o">(</span><span class="n">n</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span> <span class="k">=</span> <span class="o">(</span><span class="n">startPage</span> <span class="o">*</span> <span class="n">numItemsPerPage</span><span class="o">)</span> <span class="o">+</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span>
+
+    <span class="k">val</span> <span class="nv">futureItems</span> <span class="k">=</span> <span class="nf">getTopItems</span><span class="o">().</span><span class="py">flatMap</span> <span class="o">{</span>
+      <span class="k">case</span> <span class="nc">Right</span><span class="o">(</span><span class="n">items</span><span class="o">)</span> <span class="k">=&gt;</span>
+        <span class="k">val</span> <span class="nv">pageOfItems</span> <span class="k">=</span> <span class="nv">items</span><span class="o">.</span><span class="py">slice</span><span class="o">(</span><span class="n">startPage</span> <span class="o">*</span> <span class="n">numItemsPerPage</span><span class="o">,</span> <span class="n">startPage</span> <span class="o">*</span> <span class="n">numItemsPerPage</span> <span class="o">+</span> <span class="n">numItemsPerPage</span><span class="o">)</span>
+        <span class="nf">getItems</span><span class="o">(</span><span class="n">pageOfItems</span><span class="o">)</span>
+
+      <span class="k">case</span> <span class="nc">Left</span><span class="o">(</span><span class="n">err</span><span class="o">)</span> <span class="k">=&gt;</span>
+        <span class="nv">Future</span><span class="o">.</span><span class="py">failed</span><span class="o">(</span><span class="k">new</span> <span class="nc">Exception</span><span class="o">(</span><span class="n">err</span><span class="o">))</span>
+    <span class="o">}</span>
+
+    <span class="k">val</span> <span class="nv">printItems</span> <span class="k">=</span> <span class="nv">futureItems</span><span class="o">.</span><span class="py">map</span> <span class="o">{</span>
+      <span class="nv">_</span><span class="o">.</span><span class="py">zipWithIndex</span><span class="o">.</span><span class="py">foreach</span> <span class="o">{</span>
+        <span class="nf">case</span> <span class="o">(</span><span class="nc">Right</span><span class="o">(</span><span class="n">item</span><span class="o">),</span> <span class="n">n</span><span class="o">)</span> <span class="k">=&gt;</span>
+          <span class="nf">println</span><span class="o">(</span><span class="n">s</span><span class="s">"${itemNum(n)}. ${item.title} ${getHostName(item.url)}"</span><span class="o">)</span>
+          <span class="nf">println</span><span class="o">(</span><span class="n">s</span><span class="s">"  ${item.score} points by ${item.by} at ${timestampToPretty(item.time)} ${item.descendants} comments\n"</span><span class="o">)</span>
+        <span class="nf">case</span> <span class="o">(</span><span class="nc">Left</span><span class="o">(</span><span class="n">err</span><span class="o">),</span> <span class="n">n</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="nf">println</span><span class="o">(</span><span class="n">s</span><span class="s">"${itemNum(n)}. No item (err $err)"</span><span class="o">)</span>
+      <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="nv">Await</span><span class="o">.</span><span class="py">ready</span><span class="o">(</span><span class="n">printItems</span><span class="o">,</span> <span class="mi">10</span> <span class="n">seconds</span><span class="o">)</span>
+  <span class="o">}</span></code></pre></figure>
+
+<p>Most of this is straightforward use of Scala’s concurrency library, building up a chain of futures and then waiting for them to complete, as a side effect printing the page.</p>
+
+<p>First we call getTopItems which returns a <code class="language-plaintext highlighter-rouge">Future Either</code>, then flatMap it rather than map it since we want to take the result of the future (the item ids of the top items) and chain them into the call to getItems which returns a list of futures:</p>
+
+<figure class="highlight"><pre><code class="language-scala" data-lang="scala"> <span class="k">def</span> <span class="nf">getItems</span><span class="o">(</span><span class="n">itemIDs</span> <span class="k">:</span> <span class="kt">Seq</span><span class="o">[</span><span class="kt">HNItemID</span><span class="o">])</span> <span class="k">:</span> <span class="kt">Future</span><span class="o">[</span><span class="kt">Seq</span><span class="o">[</span><span class="kt">Either</span><span class="o">[</span><span class="kt">String</span>, <span class="kt">HNItem</span><span class="o">]]]</span> <span class="k">=</span> <span class="o">{</span>
+
+    <span class="k">val</span> <span class="nv">f</span> <span class="k">=</span> <span class="nv">itemIDs</span><span class="o">.</span><span class="py">map</span> <span class="o">{</span> <span class="n">itemID</span> <span class="k">=&gt;</span> <span class="nf">getItem</span><span class="o">(</span><span class="n">itemID</span><span class="o">)</span> <span class="o">}</span>
+    <span class="nv">Future</span><span class="o">.</span><span class="py">sequence</span><span class="o">(</span><span class="n">f</span><span class="o">)</span>
+  <span class="o">}</span></code></pre></figure>
+
+<p>At this point we take futureItems, zip it with an index so we can label the items by nuber, then print out each item. Finally we use Await.ready to block until everything is done. Note that blocking is frowned upon but it is okay in a program like this since we need to wait for the result so we can print it out. In a more interactive program you want to keep working with futures as long as possible.</p>
+
+<p>Here’s a demo run:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; run 0
+[info] Running justinhj.hnfetch.FrontPage 0
+1. BTC-E Charged in 21-Count Indictment for Laundering Funds from Hack of Mt. Gox (www.justice.gov)
+  150 points by ryanlol at 5 hours ago 59 comments
+
+2. Slack Is Raising $250M from SoftBank, Others (www.bloomberg.com)
+  52 points by Element_ at 3 hours ago 20 comments
+
+3. First Human Embryos Edited in U.S (www.technologyreview.com)
+  231 points by astdb at 7 hours ago 101 comments
+
+4. A WWII Vet Was Docked Pay for Escaping His German Captors. Now He Wants His $13 (taskandpurpose.com)
+  17 points by smacktoward at 1 hour ago 0 comments
+
+5. Britain to Ban New Diesel and Gas Cars by 2040 (www.nytimes.com)
+  13 points by kimsk112 at 2 hours ago 0 comments
+
+6. Remotely Compromising Android and iOS via a bug in Broadcom's WI-FI Chipsets (blog.exodusintel.com)
+  233 points by pedro84 at 10 hours ago 97 comments
+
+7. Google and a nuclear fusion company have developed a new algorithm (www.theguardian.com)
+  272 points by jonbaer at 12 hours ago 83 comments
+
+8. Longest Lines of Sight on Earth (beyondhorizons.eu)
+  168 points by pilom at 7 hours ago 68 comments
+
+9. Announcing the Windows Bounty Program (blogs.technet.microsoft.com)
+  214 points by el_duderino at 11 hours ago 91 comments
+
+10. An American acquitted of spying for the Soviets–even after he confessed to it (longreads.com)
+  35 points by samclemens at 3 days ago 7 comments
+
+[success] Total time: 1 s, completed 26-Jul-2017 10:58:37 PM
+
+</code></pre></div></div>
+
+<p>Please take a look at the source code for <a href="https://github.com/justinhj/hnfetch">hnfetch</a> and play around with it. I welcome any feedback in the comments section or on Twitter.</p>
+
+<p>In a future post I plan to revisit this code to demonstrate some of the cool capabilities of <a href="http://47deg.github.io/fetch/docs">47deg’s Fetch</a> library.</p>
+
+  </div>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-6582321-6', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+</article>
+
+
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  <title>Radix trees, Dash and Company mode</title>
+  <meta name="description" content="Radix trees">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://localhost:4003/2018/10/23/radix-trees-dash-and-company-mode.html">
+  <link rel="alternate" type="application/rss+xml" title="Functional[Justin]" href="http://localhost:4003/feed.xml">
+</head>
+
+
+  
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-YDJ0HSM9M6"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-YDJ0HSM9M6');
+  </script>
+
+  <body>
+
+    <header class="site-header">
+  
+    <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-3">
+	<h5><a class="site-title" href="/">Functional[Justin]</a></h5>
+      </div>
+    </div>
+
+    <div class="footer-col-wrapper">
+      
+      <div class="footer-col footer-col-1">
+        <p>
+          <img class="circle" width="110px" src="/images/justinnew.png"/></p>
+
+      </div>
+      
+      <div class="footer-col footer-col-2">
+        <p>Justin is a British/Canadian software engineer at Treasure Data, functional programming, polyglot, Neovim and Emacs. </p>
+      </div>
+      
+      <div class="footer-col footer-col-3">
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/justinhj"><span class="icon icon--github"><svg viewBox="0 0 16 16"><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/></svg>
+</span><span class="username">justinhj</span></a>
+
+          </li>
+          
+	  
+	  <li>
+	    <a href="mailto:justinhj+blog@gmail.com">
+	      <span class="icon">
+		<img src="/images/email.png"/>
+	      </span>
+	      <span class="username">
+		justinhj@gmail.com
+	      </span>
+	    </a>
+	  </li>
+
+          <li>
+            <a href="https://gitter.im/justinhj">
+            <span class="icon">
+              <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 98.7 16.3" data-v-44ebcb1a=""><g><path d="M20.9,0.3h2.6v15.8h-2.6V0.3z"></path> <path d="M34.8,2.9h-4V0.3h11.8v2.6h-5.2v13.2h-2.6V2.9z"></path> <path d="M51.9,2.9h-4V0.3h11.8v2.6h-5.2v13.2h-2.6V2.9z"></path> <path d="M66.4,0.3h11.8v2.6H69v3.9h7.9v2.6H69v4h9.2v2.6H66.4V0.3z"></path> <path d="M98.7,16.1l-4.2-5.9c1.7-0.9,2.8-2.5,2.8-4.6c0-3.1-2.5-5.3-5.7-5.3l-6.2,0v15.8h2.6l0-5.3
+    c0,0,3.6,0,3.6,0l3.8,5.3H98.7z M88.1,8.2l0-5.3l3.5,0c1.7,0,3,1,3,2.6c0,1.7-1.4,2.6-3,2.6L88.1,8.2z"></path> <path d="M7.9,7.1v2.6l3.9,0c0,0,0,1.4,0,2.3c-0.1,0.2-0.4,1.8-3.8,1.8c-0.2,0-0.3,0-0.5,0
+    c-0.1,0-0.2,0-0.2,0c-0.1,0-0.2,0-0.2,0c-0.1,0-0.2-0.1-0.3-0.1c-0.1,0-0.1,0-0.2-0.1c0,0-0.1,0-0.1,0c-2.1-0.7-3.5-2.8-3.5-5.3
+    l0,0v0v0c0-0.3,0-0.5,0.1-0.8C3.3,4.7,5.4,2.5,8,2.5c0.9,0,2.5,0.3,3.6,1.5l1.5-2.2c0,0-1.3-1.9-5-1.9C3.7,0,0.4,3.3,0,7.3
+    c0,0.3,0,0.6,0,0.8l0,0l0,0c0,4.3,3.2,7.9,7.7,8.1c0.2,0,0.3,0,0.5,0c0,0,0.1,0,0.1,0c0.3,0,0.5,0,0.7,0c0.1,0,0.2,0,0.3,0
+    c0.2,0,0.3,0,0.5-0.1c2.7-0.1,4.7-2.3,4.7-3.4c0-5,0-5.7,0-5.7H7.9z"></path></g></svg>
+            </span>
+            <span class="username">
+              justinhj
+            </span>
+</a>
+          </li>
+	  <li>
+	    <a href="https://www.linkedin.com/in/justinheyesjones">
+	      <span class="icon">
+		<img src="/images/linkedin.png"/>
+	      </span>
+	      <span class="username">
+		LinkedIn
+	      </span>
+	    </a>
+	  </li>
+
+	  
+          <li>
+            <a href="https://twitter.com/justinhj"><span class="icon icon--twitter"><svg viewBox="0 0 16 16"><path fill="#828282" d="M15.969,3.058c-0.586,0.26-1.217,0.436-1.878,0.515c0.675-0.405,1.194-1.045,1.438-1.809c-0.632,0.375-1.332,0.647-2.076,0.793c-0.596-0.636-1.446-1.033-2.387-1.033c-1.806,0-3.27,1.464-3.27,3.27 c0,0.256,0.029,0.506,0.085,0.745C5.163,5.404,2.753,4.102,1.14,2.124C0.859,2.607,0.698,3.168,0.698,3.767 c0,1.134,0.577,2.135,1.455,2.722C1.616,6.472,1.112,6.325,0.671,6.08c0,0.014,0,0.027,0,0.041c0,1.584,1.127,2.906,2.623,3.206 C3.02,9.402,2.731,9.442,2.433,9.442c-0.211,0-0.416-0.021-0.615-0.059c0.416,1.299,1.624,2.245,3.055,2.271 c-1.119,0.877-2.529,1.4-4.061,1.4c-0.264,0-0.524-0.015-0.78-0.046c1.447,0.928,3.166,1.469,5.013,1.469 c6.015,0,9.304-4.983,9.304-9.304c0-0.142-0.003-0.283-0.009-0.423C14.976,4.29,15.531,3.714,15.969,3.058z"/></svg>
+</span><span class="username">justinhj</span></a>
+
+          </li>
+          
+
+	  
+        </ul>
+      </div>
+      
+    </div>
+
+    <div class="my-links">
+      <span class="page-link">
+      	<a href="/index.html">Posts by Date</a>
+       </span>
+
+      <span class="page-link">
+      	<a href="/topposts.html">Popular Posts</a>
+      </span>
+
+      <span class="page-link">
+      	<a href="https://www.youtube.com/c/FunctionalJustin">YouTube channel</a>
+       </span>
+
+      <span class="page-link">
+      	<a href="/talks.html">Speaking Events</a>
+       </span>
+
+      <span class="page-link">
+      	<a href="/privacy.html">Privacy</a>
+      </span>
+
+      </div>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        
+
+  
+
+  <!-- Iterate over the tags in this post -->
+  
+
+
+
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">Radix trees, Dash and Company mode</h1>
+    <p class="post-meta"><time datetime="2018-10-23T17:00:00-07:00" itemprop="datePublished">Oct 23, 2018</time></p>
+    <div class="post-meta">
+      
+        
+        
+        
+        
+        More posts about
+    
+      <i class="fa fa-tags"></i>
+    
+  
+        <a href="/tag/emacs/">
+        Emacs</a>
+        
+          ,
+        
+      
+        <a href="/tag/functional-programming/">
+        Functional Programming</a>
+        
+          ,
+        
+      
+        <a href="/tag/radix-trees/">
+        Radix Trees</a>
+        
+          ,
+        
+      
+        <a href="/tag/company-mode/">
+        Company Mode</a>
+        
+          ,
+        
+      
+        <a href="/tag/data-structures/">
+        Data Structures</a>
+        
+      
+    </div>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <h2 id="radix-trees">Radix trees</h2>
+
+<p>In the <a href="https://www.gnu.org/software/emacs/news/NEWS.26.1">Emacs 26.1 release notes</a> there’s a reference to a new library:</p>
+
+<p><em>New Elisp data-structure library ‘radix-tree’</em></p>
+
+<p>I checked and the radix-tree data structure does not yet appear in the info documentation, but there is of course documentation for each of the functions in the implementation <code class="language-plaintext highlighter-rouge">radix-tree.el</code>. In this post I’ll show how to use radix trees, along with company mode (an auto complete library, the name comes from COMplete ANYthing), to implement a custom dictionary of words that you would like to be able to auto-complete when typing.</p>
+
+<p><img src="/../images/autocomplete.png" alt="Autocomplete" /></p>
+
+<p>The source code and dictionary used in this post can be found in this bitbucket <a href="https://bitbucket.org/justinhj/company-custom-dictionary/src/master/">repo</a></p>
+
+<h3 id="what-are-radix-trees">What are radix trees?</h3>
+
+<p>Rather than go into the implementation and detailed explanation of Radix trees check them out on <a href="https://en.wikipedia.org/wiki/Radix_tree">Wikipedia</a> or your favourite algorithms textbook . For the purposes of this post let’s go with a super imprecise explanation. When you store a map of keys that are associated with some value there are a number of ways to represent that as a data structure. What Radix Trees offer is that when the key is a sequence of some kind (say a string of characters or a list of numbers) we can store the keys in a much abbreviated format, taking advantage of the shared prefixes amongst many keys. For example most Vancouver phone numbers begin with 778 or 604. Most of the numbers in a radix tree can be stored under one of those three digit prefixes rather than in three levels of tree (7,7,8…). If that’s confusing never mind, it will become clear as we progress…</p>
+
+<h3 id="exploring-radix-trees-in-emacs">Exploring radix trees in Emacs</h3>
+
+<p>A small example… say we want to store the following keys in a key value store: application, appetizer, applicative, apple.</p>
+
+<p>To start with we need an empty radix tree, which is just defined as nil:</p>
+
+<div class="language-emacs-lisp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="nb">require</span> <span class="ss">'radix-tree</span><span class="p">)</span>
+
+<span class="nv">radix-tree-empty</span>
+</code></pre></div></div>
+
+<p>You add key/values to the map like this:</p>
+
+<div class="language-emacs-lisp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="k">setq</span> <span class="nv">tree-1</span> <span class="p">(</span><span class="nv">radix-tree-insert</span> <span class="nv">radix-tree-empty</span> <span class="s">"application"</span> <span class="no">t</span><span class="p">))</span>
+<span class="c1">;; (("application" . t))</span>
+</code></pre></div></div>
+
+<p>Note that inserting returns a new tree that contains just the single key “application”. For the purposes of our program we don’t need to store an actualy value, we’re just interested in the keys which represent valid English words, so we just store `t’ which is true in Emacs Lisp.</p>
+
+<p>Next we’ll make a new tree by inserting the next word into `tree-1’:</p>
+
+<div class="language-emacs-lisp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="k">setq</span> <span class="nv">tree-2</span> <span class="p">(</span><span class="nv">radix-tree-insert</span> <span class="nv">tree-1</span> <span class="s">"appetizer"</span> <span class="no">t</span><span class="p">))</span>
+
+<span class="c1">;; (("app" ("lication" . t) ("etizer" . t)))</span>
+</code></pre></div></div>
+
+<p>As you can see the radix tree split the key up into the shared prefixes between the two words. We can query how many words the tree has in total like this:</p>
+
+<div class="language-emacs-lisp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="nv">radix-tree-count</span> <span class="nv">tree-2</span><span class="p">)</span>
+
+<span class="c1">;; 2 (#o2, #x2, ?\C-b)</span>
+</code></pre></div></div>
+
+<h3 id="reducing-a-list-and-the-dash-list-api">Reducing a list and the Dash list API</h3>
+
+<p>We’ve seen how to add elements one at a time to the tree, but our goal is to take a list of words and add them to a dictionary. For that we will need to use the `seq-reduce’ function; a functional programming construct for reducing a sequence to a single value using some function that accumulates results:</p>
+
+<div class="language-emacs-lisp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="nv">seq-reduce</span> <span class="p">(</span><span class="k">lambda</span> <span class="p">(</span><span class="nv">acc</span> <span class="nv">it</span><span class="p">)</span> <span class="p">(</span><span class="nv">radix-tree-insert</span> <span class="nv">acc</span> <span class="nv">it</span> <span class="no">t</span><span class="p">))</span> <span class="o">'</span><span class="p">(</span><span class="s">"application"</span> <span class="s">"appetizer"</span> <span class="s">"applicative"</span> <span class="s">"apple"</span><span class="p">)</span> <span class="nv">radix-tree-empty</span><span class="p">)</span>
+
+<span class="c1">;; (("app" ("l" ("icati" ... ...) ("e" . t)) ("etizer" . t)))</span>
+</code></pre></div></div>
+
+<p>In the output you can see that the four words have been neatly split into their shared and non-shared parts.</p>
+
+<p><code class="language-plaintext highlighter-rouge">seq-reduce</code> is fine for our purposes, but when working with Emacs lisp lists I prefer to use <a href="https://github.com/magnars/dash.el">Dash</a> which is a package providing a more modern list API. All Dash functions begin with a dash hence the name. We can replace the code above using Dash as follows:</p>
+
+<div class="language-emacs-lisp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="nb">require</span> <span class="ss">'dash</span><span class="p">)</span>
+<span class="p">(</span><span class="nv">-reduce-from</span> <span class="p">(</span><span class="k">lambda</span> <span class="p">(</span><span class="nv">tree</span> <span class="nv">word</span><span class="p">)</span> <span class="p">(</span><span class="nv">radix-tree-insert</span> <span class="nv">tree</span> <span class="nv">word</span> <span class="no">t</span><span class="p">))</span> <span class="nv">radix-tree-empty</span> <span class="o">'</span><span class="p">(</span><span class="s">"application"</span> <span class="s">"appetizer"</span> <span class="s">"applicative"</span> <span class="s">"apple"</span><span class="p">))</span>
+
+<span class="c1">;; (("app" ("l" ("icati" ... ...) ("e" . t)) ("etizer" . t)))</span>
+</code></pre></div></div>
+
+<p>In English when you refer to a word used earlier in the conversation you will say “it” instead, and this is called anaphora. Dash provides “anaphoric” versions of many of its functions that begin with two dashes that let you abbreviate the lambda form we used above and refer to each item as it. In the case of the <code class="language-plaintext highlighter-rouge">--reduce-from</code> we get both it and acc (for the accumulated result):</p>
+
+<div class="language-emacs-lisp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="nv">--reduce-from</span> <span class="p">(</span><span class="nv">radix-tree-insert</span> <span class="nv">acc</span> <span class="nv">it</span> <span class="no">t</span><span class="p">)</span> <span class="nv">radix-tree-empty</span> <span class="o">'</span><span class="p">(</span><span class="s">"application"</span> <span class="s">"appetizer"</span> <span class="s">"applicative"</span> <span class="s">"apple"</span><span class="p">))</span>
+
+<span class="c1">;; (("app" ("l" ("icati" ... ...) ("e" . t)) ("etizer" . t)))</span>
+</code></pre></div></div>
+
+<p>That’s nicer! Now we need a function that takes a sequence of words and adds them to a radix tree:</p>
+
+<div class="language-emacs-lisp highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="p">(</span><span class="nb">defun</span> <span class="nv">list-to-radix-tree</span><span class="p">(</span><span class="nv">l</span><span class="p">)</span>
+  <span class="p">(</span><span class="nv">--reduce-from</span> <span class="p">(</span><span class="nv">radix-tree-insert</span> <span class="nv">acc</span> <span class="nv">it</span> <span class="no">t</span><span class="p">)</span> <span class="nv">radix-tree-empty</span> <span class="nv">l</span><span class="p">))</span>
+
+<span class="p">(</span><span class="k">setq</span> <span class="nv">small</span> <span class="p">(</span><span class="nv">list-to-radix-tree</span> <span class="o">'</span><span class="p">(</span><span class="s">"application"</span> <span class="s">"appetizer"</span> <span class="s">"applicative"</span> <span class="s">"apple"</span><span class="p">)))</span>
+
+<span class="c1">;; (("app" ("l" ("icati" ... ...) ("e" . t)) ("etizer" . t)))</span>
+</code></pre></div></div>
+
+<h3 id="reading-words-from-a-file-and-making-a-radix-tree">Reading words from a file and making a radix tree</h3>
+
+<p>Our next step is to load the words for our custom dictionary from a file. The one in the github repo <code class="language-plaintext highlighter-rouge">dictionary.txt</code> contains 172k words. We can load it and turn it into a list of words, and finally build a radix tree as follows:</p>
+
+<div class="language-emacs-lisp highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+ <span class="p">(</span><span class="nb">defun</span> <span class="nv">radix-tree-from-file</span><span class="p">(</span><span class="nv">file-path</span><span class="p">)</span>
+   <span class="p">(</span><span class="nv">-&gt;</span> 
+    <span class="p">(</span><span class="nv">with-temp-buffer</span>
+      <span class="p">(</span><span class="nv">insert-file-contents-literally</span> <span class="nv">file-path</span><span class="p">)</span>
+      <span class="p">(</span><span class="nv">buffer-substring-no-properties</span> <span class="p">(</span><span class="nv">point-min</span><span class="p">)</span> <span class="p">(</span><span class="nv">point-max</span><span class="p">)))</span>
+    <span class="nv">split-string</span>
+    <span class="nv">list-to-radix-tree</span><span class="p">))</span>
+
+ <span class="p">(</span><span class="nv">radix-tree-from-file</span> <span class="s">"dictionary.txt"</span><span class="p">)</span>
+
+</code></pre></div></div>
+
+<p>Note the use of “-&gt;” which is a threading macro from Dash. It lets us put a list of operations together and “threads” the result from one step to the next, making things a bit easier to read. You’ll see a similar operator in Clojure.</p>
+
+<h3 id="speeding-it-up">Speeding it up</h3>
+
+<p>Hmm, that was kinda slow. When we start using the Company mode we need to load the file and we don’t want a delay like that. Let’s use the emacs benchmark facility to see just how slow it is:</p>
+
+<div class="language-emacs-lisp highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="p">(</span><span class="nb">require</span> <span class="ss">'benchmark</span><span class="p">)</span>
+<span class="p">(</span><span class="nv">benchmark-elapse</span> <span class="p">(</span><span class="nv">radix-tree-from-file</span> <span class="s">"dictionary.txt"</span><span class="p">))</span>
+
+<span class="c1">;; 6.021951</span>
+
+</code></pre></div></div>
+
+<p>Six seconds is a bit too much. How about we just write the radix tree to a file instead, then load that? First we need to write the tree to a string using <code class="language-plaintext highlighter-rouge">print1-to-string</code>, then we can stick that in a buffer and write it to a file.</p>
+
+<div class="language-emacs-lisp highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+ <span class="p">(</span><span class="nb">defun</span> <span class="nv">write-text-to-file</span><span class="p">(</span><span class="nv">text</span> <span class="nv">file-path</span><span class="p">)</span>
+   <span class="p">(</span><span class="nv">save-excursion</span>
+     <span class="p">(</span><span class="k">let</span> <span class="p">((</span><span class="nv">buffer</span> <span class="p">(</span><span class="nv">find-file</span> <span class="nv">file-path</span><span class="p">)))</span>
+       <span class="p">(</span><span class="nv">switch-to-buffer</span> <span class="nv">buffer</span><span class="p">)</span>
+       <span class="p">(</span><span class="nv">erase-buffer</span><span class="p">)</span>
+       <span class="p">(</span><span class="nv">insert</span> <span class="nv">text</span><span class="p">)</span>
+       <span class="p">(</span><span class="nv">save-buffer</span><span class="p">)</span>
+       <span class="p">(</span><span class="nv">kill-buffer</span><span class="p">))))</span>
+
+ <span class="p">(</span><span class="k">setq</span> <span class="nv">dictionary</span> <span class="p">(</span><span class="nv">radix-tree-from-file</span> <span class="s">"dictionary.txt"</span><span class="p">))</span>
+
+ <span class="p">(</span><span class="nv">write-text-to-file</span> <span class="p">(</span><span class="nb">prin1-to-string</span> <span class="nv">dictionary</span><span class="p">)</span> <span class="s">"dictionary.el"</span><span class="p">)</span>
+
+ <span class="c1">;; (write-text-to-file (prin1-to-string small) "dictionary.el")</span>
+
+</code></pre></div></div>
+
+<p>Now let’s see how much faster it is to simply load the data structure rather than build it:</p>
+
+<div class="language-emacs-lisp highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+ <span class="p">(</span><span class="nb">defun</span> <span class="nv">tree-from-file</span><span class="p">(</span><span class="nv">file-path</span><span class="p">)</span>
+   <span class="p">(</span><span class="nv">save-excursion</span> 
+     <span class="p">(</span><span class="k">let*</span> <span class="p">((</span><span class="nv">buffer</span> <span class="p">(</span><span class="nv">find-file</span> <span class="nv">file-path</span><span class="p">))</span>
+            <span class="p">(</span><span class="nv">tree</span> <span class="p">(</span><span class="nb">read</span> <span class="nv">buffer</span><span class="p">)))</span>
+       <span class="p">(</span><span class="nv">kill-buffer</span> <span class="nv">buffer</span><span class="p">)</span>
+       <span class="nv">tree</span><span class="p">)))</span>
+
+ <span class="p">(</span><span class="nv">benchmark-elapse</span>
+   <span class="p">(</span><span class="k">progn</span>
+     <span class="p">(</span><span class="k">setq</span> <span class="nv">loaded-dictionary</span> <span class="p">(</span><span class="nv">tree-from-file</span> <span class="s">"dictionary.el"</span><span class="p">))</span>
+     <span class="no">t</span><span class="p">))</span>
+
+ <span class="c1">;; 0.198365</span>
+
+</code></pre></div></div>
+
+<p>Great! The first time we run the program it will take 6 seconds to build, but subsequently we can load the radix tree data from disk which takes 0.2 seconds. That means if we prepare the <code class="language-plaintext highlighter-rouge">dictionary.el</code> file we can simply load that when the system starts without a noticable slowdown. The next step is to be able to find all the keys given a prefix. <code class="language-plaintext highlighter-rouge">radix-tree-subtree</code> does the job, returning a subtree rooted at the given prefix. Given the relevant subtree we can then iterate all of the keys and values using the function <code class="language-plaintext highlighter-rouge">radix-tree-iter-mappings</code>. Here we use the destructive <code class="language-plaintext highlighter-rouge">!cons</code> (also from Dash) to build up a list of all the keys, which we then return. This is now all the functionality we need to return for our auto-complete functionality:</p>
+
+<div class="language-emacs-lisp highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+ <span class="p">(</span><span class="nb">defun</span> <span class="nv">radix-tree-keys</span><span class="p">(</span><span class="nv">subtree</span> <span class="nv">prefix</span><span class="p">)</span>
+   <span class="p">(</span><span class="k">let</span> <span class="p">(</span><span class="nv">keys</span> <span class="o">'</span><span class="p">())</span>
+     <span class="p">(</span><span class="nv">radix-tree-iter-mappings</span> <span class="p">(</span><span class="nv">radix-tree-subtree</span> <span class="nv">subtree</span> <span class="nv">prefix</span><span class="p">)</span>
+			       <span class="p">(</span><span class="k">lambda</span> <span class="p">(</span><span class="nv">key</span> <span class="nv">val</span><span class="p">)</span>
+				 <span class="p">(</span><span class="nv">!cons</span> <span class="p">(</span><span class="nv">concat</span> <span class="nv">prefix</span> <span class="nv">key</span><span class="p">)</span> <span class="nv">keys</span><span class="p">)))</span>
+     <span class="nv">keys</span><span class="p">))</span>
+
+ <span class="p">(</span><span class="nv">radix-tree-keys</span> <span class="nv">loaded-dictionary</span> <span class="s">"antidi"</span><span class="p">)</span>
+
+ <span class="c1">;; ("antidiscrimination" "antidilution" "antidiarrheal" "antidiabetic")</span>
+
+</code></pre></div></div>
+
+<h2 id="company-mode">Company Mode</h2>
+
+<p><a href="http://company-mode.github.io">Company Mode</a> is one of the two most popular completion frameworks for emacs (the other being <a href="https://github.com/auto-complete/auto-complete">Auto-Complete</a>). In order to make our own custom dictionary auto completion we just need to implement a single function to implement a “backend”.</p>
+
+<p>The best documentation for how to write a backend is in the docstring for `company-backends’ so I’d recommend reading that in full to see the capabilities of Company mode.</p>
+
+<p>First, the code, I’ll explain each part below:</p>
+
+<p><code class="language-plaintext highlighter-rouge">C-h v company-backends</code></p>
+
+<div class="language-emacs-lisp highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="p">(</span><span class="nb">require</span> <span class="ss">'company</span><span class="p">)</span>
+
+<span class="p">(</span><span class="nb">defun</span> <span class="nv">get-candidates</span> <span class="p">(</span><span class="nv">prefix</span><span class="p">)</span>
+  <span class="s">"Given a prefix return a list of matching words that begin with it"</span>
+  <span class="p">(</span><span class="nb">when</span> <span class="p">(</span><span class="nb">&gt;</span> <span class="p">(</span><span class="nb">length</span> <span class="nv">prefix</span><span class="p">)</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="p">(</span><span class="nv">radix-tree-keys</span> <span class="nv">company-custom-dictionary--words-tree</span> <span class="p">(</span><span class="nv">downcase</span> <span class="nv">prefix</span><span class="p">))))</span>
+
+<span class="p">(</span><span class="nb">defun</span> <span class="nv">company-custom-dictionary</span> <span class="p">(</span><span class="nv">command</span> <span class="k">&amp;optional</span> <span class="nv">arg</span> <span class="k">&amp;rest</span> <span class="nv">ignored</span><span class="p">)</span>
+  <span class="s">"Company mode backend for a custom dictionary stored as a radix tree."</span>
+  <span class="p">(</span><span class="nb">case</span> <span class="nv">command</span>
+    <span class="p">(</span><span class="ss">'init</span>    
+     <span class="p">(</span><span class="nb">unless</span> <span class="p">(</span><span class="nb">boundp</span> <span class="ss">'company-custom-dictionary--words-tree</span><span class="p">)</span>
+         <span class="p">(</span><span class="k">setq</span> <span class="nv">company-custom-dictionary--words-tree</span> <span class="p">(</span><span class="nv">tree-from-file</span> <span class="s">"dictionary.el"</span><span class="p">))))</span>
+    <span class="p">(</span><span class="ss">'prefix</span>
+     <span class="p">(</span><span class="nv">company-grab-word</span><span class="p">))</span>
+    <span class="p">(</span><span class="ss">'candidates</span>
+     <span class="p">(</span><span class="nv">radix-tree-keys</span> <span class="nv">company-custom-dictionary--words-tree</span> <span class="p">(</span><span class="nv">downcase</span> <span class="nv">arg</span><span class="p">)))</span>
+    <span class="p">(</span><span class="ss">'ignore-case</span>
+     <span class="ss">'keep-prefix</span><span class="p">)))</span>
+    
+<span class="c1">;; (provide 'company-custom-dictionary) </span>
+
+<span class="c1">;; Push the mode to the list of company backends</span>
+<span class="p">(</span><span class="nb">push</span> <span class="ss">'company-custom-dictionary</span> <span class="nv">company-backends</span><span class="p">)</span>
+
+<span class="c1">;; If you want to change the dictionary, rewrite dictionary.el and unintern the symbol</span>
+<span class="c1">;; (unintern 'company-custom-dictionary--words-tree)</span>
+
+</code></pre></div></div>
+
+<p>The few lines above are, believe it or not, all you need to make our custom dictionary backend work! We are just making a callback which implements the Company mode API by sending us commands for us to handle. Let’s look at each one:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">init</code> Init is called when company mode is initially enabled. This could be when emacs loads, or if you enable manually it will be called whenever you enable it. It could be called multiple times in a session so keep that in mind when implementing. In this case our implementation checks whether we loaded the dictionary or not. If we did then nothing happens, otherwise we load it.</li>
+  <li><code class="language-plaintext highlighter-rouge">prefix</code> - This is the text the user has typed so far that we want to complete. I call the built in function <code class="language-plaintext highlighter-rouge">company-grab-word</code> which does what you’d expect in most cases. You can write your own depending on your needs. I also check if there are any potential candidates. If not we should return nil that enables other company backends further on in the list to try and match.</li>
+  <li><code class="language-plaintext highlighter-rouge">candidates</code> - We are given <code class="language-plaintext highlighter-rouge">arg</code> which contains the word to be completed and must return the list of candidates that will show up in the menu for the user to pick from. We simply use radix-tree-keys to get the list of words based on the prefix. Note that we make the completion to lower case as we want to match words ignoring that the user may have capitalized the word.</li>
+  <li><code class="language-plaintext highlighter-rouge">ignore-case</code> - We return a special response `keep-prefix’ which maintains the users original capitalization.</li>
+</ul>
+
+<p>Note that we don’t want the performance penalty of returning the entire dictionary when matching an empty string, or a couple of characters, so the function <code class="language-plaintext highlighter-rouge">get-candidates</code> handles only words greater than 3 in length.</p>
+
+<h2 id="a-note-on-case-matching">A note on case matching</h2>
+
+<p>In this example I wanted the user dictionary to use only lower case letters. Capitalization is up to then up to the user; if you want to capitalize a word you can do so and it will match correctly. If instead you want a dictionary where case is important (perhaps function calls in a camel case API) you can set <code class="language-plaintext highlighter-rouge">ignore-case</code> to <code class="language-plaintext highlighter-rouge">nil</code> and remove the call to <code class="language-plaintext highlighter-rouge">downcase</code> when generating the candidates.</p>
+
+<h1 id="final-notes">Final notes</h1>
+
+<p>So that’s all folks! This is a fairly simple auto complete mode, but you can easily modify the code to come up with your own based on your needs. For example:</p>
+
+<ul>
+  <li>Common mispelled words list (Do you have trouble with necessary or disappoint? Add all your most hated words to the list)</li>
+  <li>Domain words. Do you work in a domain with specialist terminology not in a dictionary?</li>
+  <li>Phone numbers, server names, IP addresses and so on</li>
+</ul>
+
+<h1 id="corrections">Corrections</h1>
+
+<p>Thanks to Reddit user MCHerb for pointing out a couple of things including a typo which have been corrected in this update, and Herbert Jones for noticing and fixing a potential bug with matching words not in the dictionary. See the comments below for more.</p>
+
+  </div>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-6582321-6', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+</article>
+
+
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>
