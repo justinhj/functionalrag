@@ -1,4 +1,5 @@
 import os
+import yaml
 import re
 
 from newspaper import Article
@@ -31,6 +32,7 @@ def clean_string(input_string):
 
 
 def recurse_and_extract_text(root_folder):
+    documents = []
     for root, _, files in os.walk(root_folder):
         for file in files:
             if file.endswith('.html'):
@@ -39,7 +41,11 @@ def recurse_and_extract_text(root_folder):
                 text = clean_string(text)
                 file_path = remove_prefix_from_path(file_path, './raw/_site')
                 if len(text) > 0:
-                    print(f"Text from {file_path}:\n{text}\n\n")
+                    documents.append({'key': file_path, 'document': text})
+
+    with open('documents.yaml', 'w') as yaml_file:
+        yaml.dump({'documents': documents},
+                  yaml_file, default_flow_style=False)
 
 
 if __name__ == "__main__":
